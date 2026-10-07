@@ -85,7 +85,8 @@
     stroke-dashoffset: 0 !important;
     fill-opacity: 1 !important;
   }
-  html:not(.js) [data-preloader] {
+  html:not(.js) [data-preloader],
+  html:not(.js) [data-zoom-layer] {
     display: none !important;
   }
 

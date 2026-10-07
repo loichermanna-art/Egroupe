@@ -157,7 +157,7 @@ export const en: Dictionary = {
   bases: {
     title: "Our study centres",
     lead:
-      "23 centres in 5 cities, hosted by partner schools in the heart of the neighbourhoods. Select an area to display the list of centres and their location.",
+      "23 centres in 5 cities, hosted by partner schools in the heart of the neighbourhoods. Pick an area, then a centre: the map takes you there.",
     zones: {
       south: "Abidjan South",
       north: "Abidjan North",
@@ -168,6 +168,13 @@ export const en: Dictionary = {
     legendCities: "Reference cities",
     findBase: "Ask for the nearest centre",
     findBaseHint: "Tell us your neighbourhood on WhatsApp and a tutor will guide you.",
+    zoomIn: "Zoom in",
+    zoomOut: "Zoom out",
+    resetView: "Whole country",
+    abidjan: "Abidjan",
+    lagoon: "Ébrié Lagoon",
+    ocean: "Atlantic Ocean",
+    approx: "Select a centre and the map flies to it. Locations are shown at neighbourhood level; double-click to zoom.",
   },
 
   events: {

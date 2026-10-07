@@ -155,7 +155,7 @@ export const fr = {
   bases: {
     title: "Nos bases d'étude",
     lead:
-      "23 bases dans 5 villes, installées dans des établissements partenaires au cœur des quartiers. Sélectionnez une zone pour afficher la liste des bases et leur adresse.",
+      "23 bases dans 5 villes, installées dans des établissements partenaires au cœur des quartiers. Choisissez une zone, puis une base : la carte vous y emmène.",
     zones: {
       south: "Abidjan Sud",
       north: "Abidjan Nord",
@@ -166,6 +166,13 @@ export const fr = {
     legendCities: "Villes repères",
     findBase: "Demander la base la plus proche",
     findBaseHint: "Indiquez votre quartier sur WhatsApp : un encadreur vous oriente.",
+    zoomIn: "Zoomer",
+    zoomOut: "Dézoomer",
+    resetView: "Vue d'ensemble du pays",
+    abidjan: "Abidjan",
+    lagoon: "Lagune Ébrié",
+    ocean: "Océan Atlantique",
+    approx: "Sélectionnez une base pour que la carte s'y rende. Emplacements indiqués au niveau du quartier ; double-clic pour zoomer.",
   },
 
   events: {

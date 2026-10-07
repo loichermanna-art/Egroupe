@@ -16,7 +16,7 @@ Site vitrine d'**Excellence Group**, structure ivoirienne de formation créée e
 - Palette limitée issue de la charte : rouge `#B20603`, bordeaux `#8F0219`, or en accent, fonds papier/crème, texte encre.
 - Typographie à taille réaliste (H1 30–48 px, H2 24–34 px), hiérarchie claire, titres descriptifs plutôt que slogans.
 - Mise en page sur filets et grilles plutôt qu'en cartes ; en-têtes de section volontairement variés (empilé / scindé) ; un seul bloc de couleur (résultats).
-- Visuels réels uniquement : photo de l'équipe, affiches officielles des événements, carte vectorielle exacte de la Côte d'Ivoire (`src/data/map-ci.ts`).
+- Visuels réels uniquement : photo de l'équipe, affiches officielles des événements, carte vectorielle de la Côte d'Ivoire issue de Natural Earth 1:10m (`src/data/map-ci.ts`).
 - Motion design « cinématique » mais au service du contenu : voir la section dédiée ci-dessous.
 - Informations datées rendues honnêtement : badge « prochain rendez-vous » uniquement si une date future est connue (`nextDate` dans `src/data/events.ts`), sinon renvoi vers les réseaux sociaux.
 
@@ -29,6 +29,7 @@ Couche de mouvement ajoutée par-dessus la charte, sans changer la mise en page 
 - **Curseur personnalisé** (`Cursor`) : point + anneau à ressort, en mode « différence » ; uniquement si `(hover: hover) and (pointer: fine)`.
 - **Révélations à l'entrée dans l'écran** (`Reveal`, `Stagger`/`Item`, `Rule`, `RevealImage`) : montée + fondu, filets qui se tracent, images dévoilées par masque avec léger zoom ; **titres révélés ligne par ligne** derrière un masque (`SplitLines`, lignes mesurées dans le DOM réel) ; compteurs (`Counter`) ; parallaxe légère sur la photo (`Parallax`).
 - **États animés** : soulignement de la section active et des onglets (`layoutId`), fondu croisé des séries de résultats et des zones de bases, courbe de résultats et contour de la carte qui se tracent (`pathLength`), épingles qui se posent, menu mobile en cascade, en-tête qui s'efface au défilement vers le bas.
+- **Carte à caméra** (`ui/MapCI.tsx`) : la vue vole (zoom + déplacement, trajectoire qui « prend de la hauteur » entre deux points éloignés) vers la zone, la ville ou la base choisie ; au niveau pays on voit les villes, au niveau ville les 23 bases nommées, la lagune Ébrié et l'océan. Zoom par boutons, double-clic, glisser-déposer à la souris ; `viewBox` SVG animé (net à tout niveau de zoom), épingles HTML repositionnées par valeurs motion. Contour Natural Earth 1:10m (`src/data/map-ci.ts`, généré) ; coordonnées des bases au niveau du quartier dans `src/data/bases.ts` (`lat`/`lng`, à affiner avec les relevés GPS de la structure).
 
 Garde-fous :
 

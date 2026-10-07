@@ -1,6 +1,6 @@
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
-import { basesByZone, zoneOrder, mapPins, referenceCities, type ZoneKey } from "@/data/bases";
+import { areaLabels, basesByZone, mapPins, referenceCities, zoneOrder, type ZoneKey } from "@/data/bases";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { BasesExplorer, type ZoneView } from "./BasesExplorer";
 
@@ -15,7 +15,7 @@ export function Bases({ locale, dict }: Props) {
     key,
     label: dict.zones[key],
     count: dict.basesCount(basesByZone[key].length),
-    bases: basesByZone[key],
+    bases: basesByZone[key].map((b) => ({ ...b, zone: key })),
   }));
 
   const pins = mapPins.map((p) => ({ ...p, countLabel: dict.basesCount(p.count) }));
@@ -29,11 +29,19 @@ export function Bases({ locale, dict }: Props) {
           zones={zones}
           pins={pins}
           cities={referenceCities}
+          areaLabels={areaLabels}
           labels={{
             legendBases: dict.legendBases,
             legendCities: dict.legendCities,
             findBase: dict.findBase,
             findBaseHint: dict.findBaseHint,
+            zoomIn: dict.zoomIn,
+            zoomOut: dict.zoomOut,
+            resetView: dict.resetView,
+            abidjan: dict.abidjan,
+            lagoon: dict.lagoon,
+            ocean: dict.ocean,
+            approx: dict.approx,
           }}
         />
       </div>
