@@ -1,72 +1,43 @@
 @import "tailwindcss";
 
 /* ------------------------------------------------------------------
-   Excellence Group — Design tokens
-   Palette : noir-bordeaux profond + or / jaune (charte E-Group)
+   Excellence Group — système graphique
+   Palette resserrée dérivée de la charte : rouge / bordeaux, or en
+   accent, papier chaud pour les fonds, encre pour le texte.
 ------------------------------------------------------------------- */
 @theme {
   /* Fonds */
-  --color-noir: #0a0506;
-  --color-noir-2: #130709;
-  --color-noir-3: #1c0a0e;
-  --color-noir-4: #26101a;
+  --color-paper: #faf7f1;
+  --color-cream: #f2ebdd;
+  --color-white: #ffffff;
 
-  /* Rouges de la charte */
-  --color-bordeaux: #8f0219;
-  --color-rouge: #b20603;
-  --color-rouge-vif: #d8140f;
+  /* Texte */
+  --color-ink: #1b1517;
+  --color-ink-2: #4b4246;
+  --color-ink-3: #7e7377;
 
-  /* Ors */
-  --color-or: #e5c25b;
-  --color-or-2: #d4a93a;
-  --color-or-3: #f3dc8a;
-  --color-or-fonce: #b07000;
-  --color-jaune: #fdd401;
+  /* Filets */
+  --color-line: #e3dbcf;
+  --color-line-2: #cfc5b5;
 
-  /* Clairs */
-  --color-creme: #fae5c0;
-  --color-ivoire: #faf3e6;
-  --color-muted: #b9a89a;
-  --color-muted-2: #7d6e66;
+  /* Marque */
+  --color-red: #b20603;
+  --color-red-dark: #8f0219;
+  --color-red-deep: #5e0412;
+  --color-gold: #b8902b;
+  --color-gold-text: #8c6a14;
+  --color-gold-light: #e9d9a8;
+  --color-gold-pale: #f6efd9;
 
-  /* Typographies (auto-hébergées via @fontsource) */
-  --font-display: "Playfair Display Variable", "Playfair Display", Georgia, serif;
-  --font-sans: "Outfit Variable", "Outfit", ui-sans-serif, system-ui, sans-serif;
+  /* Typographies (auto-hébergées) */
+  --font-serif: "Source Serif 4 Variable", "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-sans: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 
-  /* Courbes d'animation */
-  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
-  --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Rayons : volontairement petits */
+  --radius-sm: 4px;
+  --radius-md: 8px;
 
-  /* Animations utilitaires */
-  --animate-marquee: marquee 38s linear infinite;
-  --animate-marquee-reverse: marquee-reverse 46s linear infinite;
-  --animate-float: float 7s ease-in-out infinite;
-  --animate-float-slow: float 11s ease-in-out infinite;
-  --animate-pulse-ring: pulse-ring 2.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
-  --animate-shimmer: shimmer 3.2s linear infinite;
-  --animate-spin-slow: spin 28s linear infinite;
-
-  @keyframes marquee {
-    from { transform: translate3d(0, 0, 0); }
-    to { transform: translate3d(-50%, 0, 0); }
-  }
-  @keyframes marquee-reverse {
-    from { transform: translate3d(-50%, 0, 0); }
-    to { transform: translate3d(0, 0, 0); }
-  }
-  @keyframes float {
-    0%, 100% { transform: translate3d(0, 0, 0); }
-    50% { transform: translate3d(0, -14px, 0); }
-  }
-  @keyframes pulse-ring {
-    0% { transform: scale(0.6); opacity: 0.9; }
-    100% { transform: scale(2.6); opacity: 0; }
-  }
-  @keyframes shimmer {
-    from { background-position: 200% center; }
-    to { background-position: -200% center; }
-  }
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* ------------------------------------------------------------------
@@ -74,181 +45,167 @@
 ------------------------------------------------------------------- */
 @layer base {
   :root {
-    color-scheme: dark;
-    --header-h: 84px;
+    color-scheme: light;
+    --header-h: 72px;
   }
 
   html {
-    scroll-behavior: auto;
+    scroll-behavior: smooth;
+    scroll-padding-top: calc(var(--header-h) + 16px);
     -webkit-text-size-adjust: 100%;
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+
   body {
-    @apply bg-noir text-ivoire font-sans antialiased;
-    font-feature-settings: "ss01", "cv11", "kern";
-    text-rendering: optimizeLegibility;
+    @apply bg-paper text-ink font-sans antialiased;
+    font-size: 1rem;
+    line-height: 1.6;
+    font-feature-settings: "kern", "liga", "calt", "ss01";
     overflow-x: clip;
   }
 
   ::selection {
-    background: var(--color-or);
-    color: var(--color-noir);
+    background: var(--color-red);
+    color: #fff;
   }
 
-  /* Scrollbar discrète */
-  ::-webkit-scrollbar { width: 10px; }
-  ::-webkit-scrollbar-track { background: var(--color-noir); }
-  ::-webkit-scrollbar-thumb {
-    background: linear-gradient(var(--color-bordeaux), var(--color-or-fonce));
-    border-radius: 999px;
-    border: 2px solid var(--color-noir);
+  h1, h2, h3, h4 {
+    text-wrap: balance;
   }
-
-  h1, h2, h3, h4 { text-wrap: balance; }
   p { text-wrap: pretty; }
 
   img, video { max-width: 100%; height: auto; }
 
-  button, a { -webkit-tap-highlight-color: transparent; }
+  a, button { -webkit-tap-highlight-color: transparent; }
 
-  /* Curseur custom : on masque le natif sur les pointeurs fins */
-  @media (pointer: fine) {
-    html.has-cursor, html.has-cursor a, html.has-cursor button { cursor: none; }
+  :focus-visible {
+    outline: 2px solid var(--color-red);
+    outline-offset: 3px;
+    border-radius: 2px;
   }
+
+  /* Tableaux */
+  table { border-collapse: collapse; }
 
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
-      scroll-behavior: auto !important;
     }
   }
 }
 
 /* ------------------------------------------------------------------
-   Composants / utilitaires maison
+   Mise en page
 ------------------------------------------------------------------- */
-@utility container-x {
+@utility wrap {
   width: 100%;
+  max-width: 1200px;
   margin-inline: auto;
-  padding-inline: clamp(1.25rem, 4vw, 4rem);
-  max-width: 1480px;
+  padding-inline: 1.25rem;
+  @media (width >= 48rem) { padding-inline: 2.5rem; }
 }
 
-@utility text-gold {
-  background: linear-gradient(100deg, #f6e3a1 0%, var(--color-or) 30%, #b8862b 55%, var(--color-or-3) 80%, var(--color-or-2) 100%);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+@utility section {
+  padding-block: 4.5rem;
+  @media (width >= 48rem) { padding-block: 7rem; }
 }
 
-@utility text-gold-shimmer {
-  background: linear-gradient(100deg, #f6e3a1 0%, var(--color-or) 30%, #b8862b 55%, var(--color-or-3) 80%, var(--color-or-2) 100%);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: var(--animate-shimmer);
+/* ------------------------------------------------------------------
+   Échelle typographique
+------------------------------------------------------------------- */
+@utility t-display {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(2.125rem, 1.45rem + 2.6vw, 3.5rem);
+  line-height: 1.08;
+  letter-spacing: -0.012em;
 }
 
-@utility border-gold-gradient {
-  border: 1px solid transparent;
-  background:
-    linear-gradient(var(--color-noir-2), var(--color-noir-2)) padding-box,
-    linear-gradient(135deg, rgba(229, 194, 91, 0.55), rgba(229, 194, 91, 0.08) 40%, rgba(143, 2, 25, 0.5)) border-box;
-}
-
-@utility glass {
-  background: rgba(19, 7, 9, 0.55);
-  backdrop-filter: blur(18px) saturate(140%);
-  -webkit-backdrop-filter: blur(18px) saturate(140%);
-  border: 1px solid rgba(250, 243, 230, 0.08);
-}
-
-@utility eyebrow {
-  font-family: var(--font-sans);
-  font-size: 0.72rem;
-  letter-spacing: 0.32em;
-  text-transform: uppercase;
-  font-weight: 500;
-  color: var(--color-or);
-}
-
-@utility display-1 {
-  font-family: var(--font-display);
-  font-weight: 500;
-  font-size: clamp(2.75rem, 7.2vw, 7rem);
-  line-height: 0.98;
-  letter-spacing: -0.02em;
-}
-
-@utility display-2 {
-  font-family: var(--font-display);
-  font-weight: 500;
-  font-size: clamp(2.25rem, 4.6vw, 4.5rem);
-  line-height: 1.02;
-  letter-spacing: -0.02em;
-}
-
-@utility display-3 {
-  font-family: var(--font-display);
-  font-weight: 500;
-  font-size: clamp(1.6rem, 2.6vw, 2.5rem);
-  line-height: 1.1;
+@utility t-h2 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.5rem);
+  line-height: 1.15;
   letter-spacing: -0.01em;
 }
 
-@utility lead {
-  font-size: clamp(1.05rem, 1.35vw, 1.3rem);
+@utility t-h3 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+  line-height: 1.25;
+}
+
+@utility t-h4 {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 1.0625rem;
+  line-height: 1.4;
+}
+
+@utility t-lead {
+  font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem);
   line-height: 1.6;
-  color: var(--color-muted);
+  color: var(--color-ink-2);
 }
 
-@utility mask-fade-b {
-  -webkit-mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
-  mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
+@utility t-eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-red);
 }
 
-@utility mask-fade-x {
-  -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
-  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+@utility t-stat {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(2rem, 1.6rem + 1.6vw, 3rem);
+  line-height: 1;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums lining-nums;
 }
 
-/* Grain cinéma (très léger) */
-.grain::after {
-  content: "";
-  position: fixed;
-  inset: -50%;
-  width: 200%;
-  height: 200%;
-  pointer-events: none;
-  z-index: 60;
-  opacity: 0.055;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  mix-blend-mode: overlay;
+@utility t-caption {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--color-ink-3);
 }
 
-/* Halo radial réutilisable */
-.halo {
-  background: radial-gradient(60% 60% at 50% 50%, rgba(229, 194, 91, 0.22) 0%, rgba(143, 2, 25, 0.18) 38%, transparent 72%);
-  filter: blur(10px);
+/* ------------------------------------------------------------------
+   Motifs de marque
+------------------------------------------------------------------- */
+/* Double filet or : rappel des deux lignes sous le mot-symbole du logo */
+@utility rule-gold {
+  display: block;
+  width: 2.25rem;
+  height: 5px;
+  background:
+    linear-gradient(var(--color-gold), var(--color-gold)) top / 100% 1px no-repeat,
+    linear-gradient(var(--color-gold), var(--color-gold)) bottom / 100% 1px no-repeat;
 }
 
-/* Lignes de grille subtiles (style Cerebrium) */
-.grid-lines {
-  background-image:
-    linear-gradient(to right, rgba(250, 243, 230, 0.045) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(250, 243, 230, 0.045) 1px, transparent 1px);
-  background-size: 96px 96px;
+@utility rule-gold-light {
+  display: block;
+  width: 2.25rem;
+  height: 5px;
+  background:
+    linear-gradient(var(--color-gold-light), var(--color-gold-light)) top / 100% 1px no-repeat,
+    linear-gradient(var(--color-gold-light), var(--color-gold-light)) bottom / 100% 1px no-repeat;
 }
 
-/* Intro déjà vue : on masque le preloader rendu côté serveur avant l'hydratation */
-html[data-intro="done"] .eg-preloader { display: none; }
-
-/* Lenis */
-html.lenis, html.lenis body { height: auto; }
-.lenis.lenis-smooth { scroll-behavior: auto !important; }
-.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
-.lenis.lenis-stopped { overflow: hidden; }
+/* Lien souligné « éditorial » */
+@utility link-ul {
+  text-decoration: underline;
+  text-decoration-color: var(--color-line-2);
+  text-underline-offset: 0.2em;
+  text-decoration-thickness: 1px;
+  transition: text-decoration-color 150ms ease;
+  &:hover { text-decoration-color: currentColor; }
+}

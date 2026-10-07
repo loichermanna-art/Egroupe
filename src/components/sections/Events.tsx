@@ -1,182 +1,91 @@
-"use client";
-
-import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { AnimatePresence, motion, useInView, useReducedMotion } from "motion/react";
-import { CalendarDays, Sparkles } from "lucide-react";
 
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
-import { eventMedia, eventOrder, type EventKey } from "@/data/events";
-import { cn } from "@/lib/utils";
+import { eventMedia, eventOrder, isUpcoming, type EventKey } from "@/data/events";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Reveal } from "@/components/ui/Reveal";
 
 type Props = { locale: Locale; dict: Dictionary["events"] };
 type Item = Dictionary["events"]["items"][number];
 
+/** Agenda des événements : une liste éditoriale, les affiches réelles en regard. */
 export function Events({ dict }: Props) {
   const items = eventOrder
     .map((key) => dict.items.find((it) => it.key === key))
     .filter((it): it is Item => Boolean(it));
-  const [active, setActive] = useState<EventKey>(items[0].key as EventKey);
-  const reduced = useReducedMotion();
+  const now = new Date();
 
   return (
-    <section id="events" className="relative overflow-hidden bg-noir py-28 md:py-40">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-or/40 to-transparent" />
-      <div className="container-x">
+    <section id="events" className="section bg-white">
+      <div className="wrap">
         <SectionHeader eyebrow={dict.eyebrow} title={dict.title} lead={dict.lead} />
 
-        <div className="mt-20 grid gap-16 lg:grid-cols-12 lg:gap-12">
-          {/* ---- Visuel épinglé (desktop) ---- */}
-          <div className="relative hidden lg:col-span-6 lg:block">
-            <div className="sticky top-[12vh] h-[76vh]">
-              <Collage active={active} reduced={!!reduced} />
-            </div>
-          </div>
-
-          {/* ---- Liste des événements ---- */}
-          <ol className="lg:col-span-6">
-            {items.map((item, i) => (
-              <EventRow
+        <ol className="mt-12 border-t border-line md:mt-16">
+          {items.map((item, i) => {
+            const media = eventMedia[item.key as EventKey];
+            const upcoming = isUpcoming(media, now);
+            return (
+              <Reveal
                 key={item.key}
-                item={item}
-                index={i}
-                total={items.length}
-                isActive={active === item.key}
-                nextLabel={dict.next}
-                setActive={setActive}
-              />
-            ))}
-          </ol>
-        </div>
+                as="li"
+                amount={0.15}
+                className="grid gap-6 border-b border-line py-8 md:grid-cols-[9rem_1fr_11rem] md:gap-10 md:py-10 lg:grid-cols-[11rem_1fr_12rem]"
+              >
+                {/* Colonne repère */}
+                <div className="flex items-start gap-4 md:block">
+                  <span className="font-serif text-[0.9375rem] text-red tabular-nums">{String(i + 1).padStart(2, "0")}</span>
+                  <div className="md:mt-3">
+                    <p className="text-[0.75rem] font-semibold uppercase tracking-[0.08em] text-ink-3">{item.kicker}</p>
+                    {upcoming && (
+                      <p className="mt-2 inline-flex items-center gap-1.5 rounded-[2px] bg-red px-2 py-0.5 text-[0.75rem] font-medium text-white">
+                        <span className="h-1.5 w-1.5 rounded-full bg-gold-light" aria-hidden />
+                        {dict.next}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Contenu */}
+                <div className="max-w-[36rem]">
+                  <h3 className="t-h3 text-ink">{item.title}</h3>
+                  <p className="mt-3 leading-[1.7] text-ink-2">{item.text}</p>
+                  <p className="mt-4 text-[0.875rem] font-medium text-ink">{item.meta}</p>
+
+                  {media.extras.length > 0 && (
+                    <div className="mt-5 flex items-center gap-3">
+                      <span className="text-[0.75rem] text-ink-3">{dict.pastEditions}</span>
+                      <ul className="flex gap-2">
+                        {media.extras.map((ex) => (
+                          <li key={ex.src} className="relative h-10 w-10 overflow-hidden rounded-[2px] border border-line bg-cream">
+                            <Image src={ex.src} alt="" fill sizes="40px" className="object-cover" />
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+
+                {/* Affiche de l'édition la plus récente */}
+                <figure className="md:justify-self-end">
+                  <div
+                    className="relative w-[11rem] overflow-hidden rounded-[2px] border border-line bg-cream md:w-full"
+                    style={{ aspectRatio: `${media.poster.width} / ${media.poster.height}` }}
+                  >
+                    <Image
+                      src={media.poster.src}
+                      alt={`${item.title} — ${item.kicker}`}
+                      fill
+                      sizes="(min-width: 768px) 12rem, 11rem"
+                      className="object-cover"
+                    />
+                  </div>
+                </figure>
+              </Reveal>
+            );
+          })}
+        </ol>
       </div>
     </section>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-function EventRow({
-  item,
-  index,
-  total,
-  isActive,
-  nextLabel,
-  setActive,
-}: {
-  item: Item;
-  index: number;
-  total: number;
-  isActive: boolean;
-  nextLabel: string;
-  setActive: (key: EventKey) => void;
-}) {
-  const ref = useRef<HTMLLIElement>(null);
-  const inView = useInView(ref, { margin: "-45% 0px -45% 0px" });
-  useEffect(() => {
-    if (inView) setActive(item.key as EventKey);
-  }, [inView, item.key, setActive]);
-
-  const media = eventMedia[item.key as EventKey];
-  const isNext = item.key === "eclosion";
-
-  return (
-    <li
-      ref={ref}
-      className={cn(
-        "group relative border-t border-ivoire/10 py-12 transition-opacity duration-700 lg:min-h-[62vh] lg:py-16",
-        index === total - 1 && "border-b",
-        "lg:opacity-40 lg:data-[active=true]:opacity-100",
-      )}
-      data-active={isActive}
-    >
-      {/* Affiche (mobile / tablette) */}
-      <Reveal className="relative mb-8 aspect-[4/3] overflow-hidden rounded-3xl lg:hidden" amount={0.2}>
-        <Image
-          src={media.poster.src}
-          alt={item.title}
-          fill
-          sizes="(min-width: 768px) 60vw, 100vw"
-          className="object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-noir/70 to-transparent" />
-      </Reveal>
-
-      <div className="flex items-start gap-6">
-        <span className="font-display text-sm text-or/70 lg:mt-3">{String(index + 1).padStart(2, "0")}</span>
-        <div className="flex-1">
-          <div className="flex flex-wrap items-center gap-3">
-            <p className="eyebrow !tracking-[0.25em]">{item.kicker}</p>
-            {isNext && (
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-rouge-vif/20 px-3 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-or">
-                <Sparkles className="h-3 w-3" />
-                {nextLabel}
-              </span>
-            )}
-          </div>
-          <h3 className="mt-4 font-display text-[clamp(2rem,3.4vw,3.4rem)] leading-[1.02] text-ivoire transition-colors duration-500 group-hover:text-or lg:group-data-[active=true]:text-ivoire">
-            {item.title}
-          </h3>
-          <p className="mt-5 max-w-xl text-[1rem] leading-relaxed text-muted">{item.text}</p>
-          <p className="mt-6 flex items-center gap-2 text-[0.72rem] uppercase tracking-[0.22em] text-ivoire/70">
-            <CalendarDays className="h-4 w-4 text-or" strokeWidth={1.6} />
-            {item.meta}
-          </p>
-        </div>
-      </div>
-    </li>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-function Collage({ active, reduced }: { active: EventKey; reduced: boolean }) {
-  const media = eventMedia[active];
-  return (
-    <div className="relative h-full w-full">
-      {/* Lueur colorée */}
-      <motion.div
-        className="absolute inset-[12%] rounded-full blur-3xl"
-        animate={{ backgroundColor: media.accent, opacity: 0.18 }}
-        transition={{ duration: 1 }}
-      />
-      <AnimatePresence mode="popLayout" initial={false}>
-        <motion.div
-          key={active}
-          className="absolute inset-0"
-          initial={reduced ? { opacity: 0 } : { opacity: 0, scale: 0.96, rotate: -1.5 }}
-          animate={{ opacity: 1, scale: 1, rotate: 0 }}
-          exit={reduced ? { opacity: 0 } : { opacity: 0, scale: 1.03, rotate: 1 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        >
-          {/* Extras derrière, en éventail */}
-          {media.extras.map((ex, i) => (
-            <motion.div
-              key={ex.src}
-              className={cn(
-                "absolute overflow-hidden rounded-2xl border border-ivoire/10 shadow-2xl",
-                i === 0 ? "left-0 top-[6%] w-[46%]" : "right-0 bottom-[4%] w-[42%]",
-              )}
-              style={{ aspectRatio: `${ex.width}/${ex.height}` }}
-              initial={{ opacity: 0, y: 30, rotate: i === 0 ? -8 : 8 }}
-              animate={{ opacity: 1, y: 0, rotate: i === 0 ? -6 : 6 }}
-              transition={{ duration: 1, delay: 0.15 + i * 0.1, ease: [0.16, 1, 0.3, 1] }}
-            >
-              <Image src={ex.src} alt="" fill sizes="25vw" className="object-cover" />
-              <div className="absolute inset-0 bg-noir/35" />
-            </motion.div>
-          ))}
-          {/* Affiche principale */}
-          <motion.div
-            className="absolute left-1/2 top-1/2 w-[62%] max-h-full -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-3xl border border-or/30 shadow-[0_50px_100px_-30px_rgba(0,0,0,0.8)]"
-            style={{ aspectRatio: `${media.poster.width}/${media.poster.height}` }}
-            animate={reduced ? undefined : { y: ["-50%", "-53%", "-50%"] }}
-            transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <Image src={media.poster.src} alt="" fill sizes="35vw" className="object-cover" priority={false} />
-          </motion.div>
-        </motion.div>
-      </AnimatePresence>
-    </div>
   );
 }

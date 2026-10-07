@@ -42,13 +42,21 @@ export const zoneOrder: ZoneKey[] = ["south", "north", "interior"];
 
 export const totalBases = Object.values(basesByZone).reduce((n, list) => n + list.length, 0);
 
-/** Positions (en % de l'image de la carte dorée) des épingles. */
-export type MapPin = { key: string; label: string; x: number; y: number; count: number; primary?: boolean };
+/** Villes où Excellence Group est implanté (coordonnées géographiques réelles). */
+export type MapPin = { key: string; label: string; lat: number; lng: number; count: number; primary?: boolean };
 
 export const mapPins: MapPin[] = [
-  { key: "abidjan", label: "Abidjan", x: 64, y: 72.5, count: 17, primary: true },
-  { key: "bassam", label: "Grand-Bassam", x: 67.5, y: 75, count: 1 },
-  { key: "yakro", label: "Yamoussoukro", x: 51, y: 57, count: 2 },
-  { key: "bouake", label: "Bouaké", x: 54, y: 47.5, count: 2 },
-  { key: "arrah", label: "Arrah", x: 64.5, y: 59, count: 1 },
+  { key: "abidjan", label: "Abidjan", lat: 5.345, lng: -4.024, count: 17, primary: true },
+  { key: "bassam", label: "Grand-Bassam", lat: 5.211, lng: -3.738, count: 1 },
+  { key: "yakro", label: "Yamoussoukro", lat: 6.827, lng: -5.289, count: 2 },
+  { key: "bouake", label: "Bouaké", lat: 7.694, lng: -5.03, count: 2 },
+  { key: "arrah", label: "Arrah", lat: 6.673, lng: -3.97, count: 1 },
+];
+
+/** Villes repères affichées en gris pour situer la carte. */
+export const referenceCities: { label: string; lat: number; lng: number }[] = [
+  { label: "Korhogo", lat: 9.458, lng: -5.629 },
+  { label: "Man", lat: 7.412, lng: -7.554 },
+  { label: "Daloa", lat: 6.877, lng: -6.45 },
+  { label: "San-Pédro", lat: 4.748, lng: -6.636 },
 ];

@@ -1,19 +1,16 @@
-"use client";
-
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import type { ReactNode, ComponentProps } from "react";
 import { cn } from "@/lib/utils";
-import { Magnetic } from "./Magnetic";
 
-type Variant = "gold" | "outline" | "ghost" | "red";
-type Size = "md" | "lg";
+type Variant = "primary" | "secondary" | "link" | "onDark" | "onDarkOutline" | "onDarkLink";
+type Size = "sm" | "md" | "lg";
 
 type BaseProps = {
   variant?: Variant;
   size?: Size;
-  magnetic?: boolean;
-  icon?: boolean;
+  /** Affiche une flèche à droite (par défaut pour les variantes « link »). */
+  arrow?: boolean;
   className?: string;
   children: ReactNode;
 };
@@ -22,83 +19,78 @@ type AnchorProps = BaseProps & { href: string; external?: boolean } & Omit<Compo
 type ButtonProps = BaseProps & { href?: undefined } & Omit<ComponentProps<"button">, "children">;
 
 const base =
-  "group relative inline-flex items-center justify-center gap-3 overflow-hidden rounded-full font-sans font-semibold uppercase tracking-[0.18em] transition-[transform,box-shadow,background-color,color,border-color] duration-500 ease-out-expo focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-or/70 focus-visible:ring-offset-2 focus-visible:ring-offset-noir";
+  "group inline-flex items-center justify-center gap-2 font-medium transition-[background-color,color,border-color,box-shadow] duration-150 ease-out select-none disabled:cursor-not-allowed disabled:opacity-50 aria-disabled:cursor-not-allowed aria-disabled:opacity-50";
 
 const sizes: Record<Size, string> = {
-  md: "px-6 py-3 text-[0.7rem]",
-  lg: "px-8 py-4 text-[0.75rem]",
+  sm: "h-9 px-3.5 text-[0.875rem] rounded-[var(--radius-sm)]",
+  md: "h-11 px-5 text-[0.9375rem] rounded-[var(--radius-sm)]",
+  lg: "h-12 px-6 text-[0.9375rem] rounded-[var(--radius-sm)]",
 };
 
 const variants: Record<Variant, string> = {
-  gold:
-    "bg-gradient-to-r from-or-3 via-or to-or-2 text-noir shadow-[0_10px_40px_-12px_rgba(229,194,91,0.55)] hover:shadow-[0_18px_60px_-14px_rgba(229,194,91,0.75)] hover:-translate-y-0.5",
-  red:
-    "bg-gradient-to-r from-rouge to-bordeaux text-ivoire shadow-[0_10px_40px_-12px_rgba(178,6,3,0.6)] hover:-translate-y-0.5",
-  outline:
-    "border border-ivoire/25 text-ivoire hover:border-or hover:text-or",
-  ghost: "text-ivoire hover:text-or",
+  primary:
+    "bg-red text-white shadow-[inset_0_-1px_0_rgba(0,0,0,0.18)] hover:bg-red-dark active:bg-red-deep",
+  secondary:
+    "border border-ink/25 bg-transparent text-ink hover:border-ink hover:bg-white active:bg-cream",
+  link: "h-auto px-0 text-red hover:text-red-dark rounded-none",
+  onDark:
+    "bg-white text-red-dark hover:bg-cream active:bg-gold-pale",
+  onDarkOutline:
+    "border border-white/40 text-white hover:border-white hover:bg-white/10",
+  onDarkLink: "h-auto px-0 text-white hover:text-gold-light rounded-none",
 };
 
-function Inner({ children, icon, variant }: { children: ReactNode; icon?: boolean; variant: Variant }) {
+function Inner({ children, arrow, variant }: { children: ReactNode; arrow: boolean; variant: Variant }) {
+  const isLink = variant === "link" || variant === "onDarkLink";
   return (
     <>
-      {/* Balayage lumineux au survol */}
-      {(variant === "gold" || variant === "red") && (
-        <span
+      <span className={cn(isLink && "link-ul")}>{children}</span>
+      {arrow && (
+        <ArrowRight
+          className="h-4 w-4 shrink-0 transition-transform duration-150 ease-out group-hover:translate-x-0.5"
+          strokeWidth={1.75}
           aria-hidden
-          className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/35 to-transparent transition-transform duration-700 ease-out-expo group-hover:translate-x-full"
         />
-      )}
-      <span className="relative">{children}</span>
-      {icon && (
-        <span className="relative grid h-5 w-5 place-items-center overflow-hidden">
-          <ArrowUpRight
-            className="h-4 w-4 transition-transform duration-500 ease-out-expo group-hover:-translate-y-5 group-hover:translate-x-5"
-            strokeWidth={2.2}
-          />
-          <ArrowUpRight
-            className="absolute h-4 w-4 translate-y-5 -translate-x-5 transition-transform duration-500 ease-out-expo group-hover:translate-x-0 group-hover:translate-y-0"
-            strokeWidth={2.2}
-          />
-        </span>
       )}
     </>
   );
 }
 
 export function Button(props: AnchorProps | ButtonProps) {
-  const { variant = "gold", size = "lg", magnetic = true, icon = true, className, children } = props;
+  const { variant = "primary", size = "md", className, children } = props;
+  const isLink = variant === "link" || variant === "onDarkLink";
+  const arrow = props.arrow ?? isLink;
   const classes = cn(base, sizes[size], variants[variant], className);
 
-  let node: ReactNode;
   if ("href" in props && props.href) {
-    const { href, external, variant: _v, size: _s, magnetic: _m, icon: _i, className: _c, children: _ch, ...rest } = props;
-    void _v; void _s; void _m; void _i; void _c; void _ch;
+    const { href, external, variant: _v, size: _s, arrow: _a, className: _c, children: _ch, ...rest } = props;
+    void _v; void _s; void _a; void _c; void _ch;
     const isHttp = /^https?:\/\//i.test(href);
-    node = external ? (
-      <a
-        href={href}
-        target={isHttp ? "_blank" : undefined}
-        rel={isHttp ? "noopener noreferrer" : undefined}
-        className={classes}
-        {...rest}
-      >
-        <Inner icon={icon} variant={variant}>{children}</Inner>
-      </a>
-    ) : (
+    if (external || isHttp || href.startsWith("tel:") || href.startsWith("mailto:")) {
+      return (
+        <a
+          href={href}
+          target={isHttp ? "_blank" : undefined}
+          rel={isHttp ? "noopener noreferrer" : undefined}
+          className={classes}
+          {...rest}
+        >
+          <Inner arrow={arrow} variant={variant}>{children}</Inner>
+        </a>
+      );
+    }
+    return (
       <Link href={href} className={classes} {...rest}>
-        <Inner icon={icon} variant={variant}>{children}</Inner>
+        <Inner arrow={arrow} variant={variant}>{children}</Inner>
       </Link>
-    );
-  } else {
-    const { variant: _v, size: _s, magnetic: _m, icon: _i, className: _c, children: _ch, href: _h, ...rest } = props as ButtonProps;
-    void _v; void _s; void _m; void _i; void _c; void _ch; void _h;
-    node = (
-      <button type="button" className={classes} {...rest}>
-        <Inner icon={icon} variant={variant}>{children}</Inner>
-      </button>
     );
   }
 
-  return magnetic ? <Magnetic>{node}</Magnetic> : <>{node}</>;
+  const { variant: _v, size: _s, arrow: _a, className: _c, children: _ch, href: _h, type, ...rest } = props as ButtonProps;
+  void _v; void _s; void _a; void _c; void _ch; void _h;
+  return (
+    <button type={type ?? "button"} className={classes} {...rest}>
+      <Inner arrow={arrow} variant={variant}>{children}</Inner>
+    </button>
+  );
 }

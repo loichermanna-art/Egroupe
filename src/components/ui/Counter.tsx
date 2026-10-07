@@ -23,7 +23,7 @@ export function Counter({
   decimals = 0,
   suffix = "",
   prefix = "",
-  duration = 2.2,
+  duration = 1.4,
   delay = 0,
   className,
 }: Props) {
@@ -38,7 +38,7 @@ export function Counter({
     const controls = animate(0, value, {
       duration,
       delay,
-      ease: [0.16, 1, 0.3, 1],
+      ease: [0.22, 1, 0.36, 1],
       onUpdate: (v) => setDisplay(formatNumber(v, locale, decimals)),
     });
     return () => controls.stop();

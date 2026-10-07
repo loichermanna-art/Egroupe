@@ -7,6 +7,8 @@ export type EventMedia = {
   /** Affiches secondaires pour la pile / le collage. */
   extras: { src: string; width: number; height: number }[];
   accent: string;
+  /** Date de la prochaine édition connue (ISO 8601). Le badge « Prochain rendez-vous » n'apparaît que si elle est à venir. */
+  nextDate?: string;
 };
 
 export const eventMedia: Record<EventKey, EventMedia> = {
@@ -48,7 +50,13 @@ export const eventMedia: Record<EventKey, EventMedia> = {
       { src: "/images/events/eclosion-6-2023.jpg", width: 1113, height: 787 },
     ],
     accent: "#e5c25b",
+    nextDate: "2026-07-25T19:00:00+00:00",
   },
 };
+
+/** L'événement a-t-il une édition à venir à la date donnée ? */
+export function isUpcoming(event: EventMedia, now: Date = new Date()): boolean {
+  return !!event.nextDate && new Date(event.nextDate).getTime() > now.getTime();
+}
 
 export const eventOrder: EventKey[] = ["motivation", "afterbac", "orientation", "brevetes", "eclosion"];

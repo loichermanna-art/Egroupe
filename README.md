@@ -6,10 +6,18 @@ Site vitrine d'**Excellence Group**, structure ivoirienne de formation créée e
 ## Stack
 
 - **Next.js 16** (App Router, Turbopack) · **React 19** · **TypeScript**
-- **Tailwind CSS v4** (tokens de la charte dans `src/app/globals.css`)
-- **motion** (animations, scroll-linked) · **Lenis** (défilement fluide)
-- Polices auto-hébergées : *Playfair Display* (titres) + *Outfit* (texte) via `@fontsource-variable`
+- **Tailwind CSS v4** — système graphique (couleurs, échelle typographique, motifs) dans `src/app/globals.css`
+- **motion** — uniquement pour des apparitions discrètes et le panneau de navigation mobile
+- Polices auto-hébergées : *Source Serif 4* (titres, citations) + *Inter* (texte, interface) via `@fontsource-variable`
 - i18n maison : routes `/fr` (défaut) et `/en`, redirection automatique via `src/proxy.ts`
+
+## Principes de design
+
+- Palette limitée issue de la charte : rouge `#B20603`, bordeaux `#8F0219`, or en accent, fonds papier/crème, texte encre.
+- Typographie à taille réaliste (H1 ≈ 34–56 px), hiérarchie claire, pas d'effets décoratifs.
+- Mise en page sur filets et grilles plutôt qu'en cartes ; blocs de couleur réservés aux moments clés (résultats, inscriptions).
+- Visuels réels uniquement : photo de l'équipe, affiches officielles des événements, carte vectorielle exacte de la Côte d'Ivoire (`src/data/map-ci.ts`).
+- Animations courtes (≤ 0,45 s) et désactivées si l'utilisateur préfère réduire les animations.
 
 ## Démarrer
 
@@ -27,14 +35,13 @@ npm run typecheck  # tsc --noEmit
 src/
   app/[lang]/        layout (fonts, metadata, preloader, nav, footer), page d'accueil, 404
   components/
-    layout/          Preloader, Navbar, Footer, Cursor (curseur personnalisé)
-    sections/        Hero, Marquee, About, Pillars, Results, Bases, Events, Learning, Testimonials, FinalCta
-    ui/              Button, Magnetic, Reveal/SplitWords, Counter, SectionHeader, ScrollWords, BrandIcons
-    providers/       SmoothScroll (Lenis)
-  data/              site (contacts, liens), stats (taux BAC/BEPC), laureates, bases, events
+    layout/          Navbar (barre utilitaire + navigation, section active, menu mobile), Footer
+    sections/        Hero, KeyFacts, About, Pillars, Results, Bases (+ BasesExplorer), Events, Learning, Testimonials, FinalCta
+    ui/              Button, Reveal, Counter, SectionHeader, MapCI (carte SVG), BrandIcons
+  data/              site (contacts, liens), stats (taux BAC/BEPC), laureates, bases (+ coordonnées), events, map-ci (contour du pays)
   i18n/              config, dictionnaires fr/en, getDictionary
-  lib/               utils (cn, formats), intro (état du preloader), hooks
-public/images/       logos, photo d'équipe, illustrations, affiches des événements, image OG
+  lib/               utils (cn, formats)
+public/images/       logos, photo d'équipe, affiches des événements, image Open Graph
 docs/                brief complet + dossier de présentation source
 ```
 

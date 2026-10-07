@@ -8,65 +8,58 @@ export const en: Dictionary = {
     ogAlt: "Excellence Group — Excellence at the rhythm of our lives",
   },
 
-  preloader: {
-    words: ["Discipline", "Hard work", "Success"],
-    since: "Since 2011 · Abidjan",
-  },
-
   nav: {
     home: "Home",
-    about: "About",
+    about: "About us",
     programs: "Programmes",
     results: "Results",
     bases: "Our centres",
     events: "Events",
-    contact: "Contact",
-    cta: "Enrol now",
     learning: "EG Learning",
-    menu: "Menu",
-    close: "Close",
-    langLabel: "Language",
+    contact: "Contact",
+    cta: "Enrol",
+    phoneLabel: "Call us",
+    whatsapp: "WhatsApp",
+    menu: "Open menu",
+    close: "Close menu",
+    langLabel: "Change language",
+    skip: "Skip to content",
   },
 
   hero: {
-    eyebrow: "Excellence Group · Abidjan · Since 2011",
+    eyebrow: "Training organisation · Abidjan, Côte d'Ivoire",
     titleA: "Revealing the",
     titleEm: "excellence",
     titleB: "within every student.",
     lead:
-      "Academic reinforcement for secondary and university students, personal development and entrepreneurship. For 15 years we have guided thousands of students to success — from the BEPC to the BAC, and far beyond.",
+      "Academic reinforcement for secondary and university students, personal development and entrepreneurship. Since 2011, we have guided thousands of students to success — from the BEPC to the BAC, and far beyond.",
     ctaPrimary: "Join the EGROUP family",
     ctaSecondary: "See our 2026 results",
-    scroll: "Scroll",
-    badges: [
-      { value: "90.02%", label: "BAC pass rate 2026" },
-      { value: "2,147", label: "New graduates" },
-      { value: "23", label: "Study centres" },
-    ],
-    tagline: "Excellence at the rhythm of our lives.",
+    photoCaption: "The Excellence Group tutors in Koumassi — photo Romaric Assemien",
+    photoTag: "Since 2011",
+    highlightValue: "90.02%",
+    highlightLabel: "BAC pass rate in 2026",
   },
 
-  marquee: [
-    "15 years of excellence",
-    "23 study centres",
-    "2,147 new graduates in 2026",
-    "90.02% BAC pass rate",
-    "93.75% BEPC pass rate",
-    "Motivation Day",
-    "Éclosion · Gala of excellence",
-    "After BAC",
-    "EG Learning",
+  facts: [
+    { value: "15 years", label: "of experience" },
+    { value: "23", label: "study centres" },
+    { value: "2,147", label: "new graduates in 2026" },
+    { value: "90.02%", label: "BAC pass rate 2026" },
+    { value: "93.75%", label: "BEPC pass rate 2026" },
   ],
 
   about: {
-    eyebrow: "01 — Who we are",
-    manifesto:
-      "We believe every student carries a potential for excellence. Since 2011, Excellence Group has trained, motivated and supported pupils, students and anyone who has lost the desire to succeed — with discipline, hard work and faith in success.",
+    eyebrow: "About us",
     title: "A complete structure, not just classes.",
     body1:
       "Founded in 2011, Excellence Group is a training organisation specialised in academic reinforcement for secondary and university students, personal development and an introduction to entrepreneurship.",
     body2:
       "Our courses are delivered in person at our study centres and online through the EG Learning platform. Through the E-Group Foundation, we also provide free training.",
+    missionTitle: "Our mission",
+    manifesto:
+      "To raise the academic and moral standards of pupils, students and anyone who has lost the desire to succeed — with discipline, hard work and faith in success.",
+    slogan: "Excellence at the rhythm of our lives.",
     objectivesTitle: "Our objectives",
     objectives: [
       "Strengthen learners' theoretical and intellectual knowledge.",
@@ -76,15 +69,14 @@ export const en: Dictionary = {
       "Bring young managers into the world of work.",
     ],
     yearsValue: "15",
-    yearsLabel: "years dedicated to success",
-    photoCaption: "The Excellence Group tutors — © Romaric Assemien",
+    yearsLabel: "years dedicated to students' success",
     values: ["Discipline", "Hard work", "Success"],
   },
 
   pillars: {
-    eyebrow: "02 — Our programmes",
+    eyebrow: "Our programmes",
     title: "Four pillars, one standard.",
-    hint: "Keep scrolling",
+    lead: "From lower secondary to university, each programme answers a specific need: understand, progress, choose a path and prepare what comes next.",
     items: [
       {
         index: "01",
@@ -92,7 +84,7 @@ export const en: Dictionary = {
         subtitle: "From lower secondary to final year",
         text:
           "Intensive reinforcement classes across our 23 centres, taught by passionate teachers and tutors. Exam classes — 3ᵉ and Terminale — are at the heart of our method.",
-        bullets: ["Group & private lessons", "Assessment tests every 3 months", "A dedicated tutor for every student"],
+        bullets: ["Group and private lessons", "Assessment tests every 3 months", "A dedicated tutor for every student"],
       },
       {
         index: "02",
@@ -100,7 +92,7 @@ export const en: Dictionary = {
         subtitle: "Choosing the right path",
         text:
           "University reinforcement, orientation weeks and career days: we help new graduates choose the programmes and schools that truly prepare their future.",
-        bullets: ["Orientation week", "Partner schools & stand visits", "Mentoring by alumni"],
+        bullets: ["Orientation week", "Partner schools and stand visits", "Mentoring by alumni"],
       },
       {
         index: "03",
@@ -108,7 +100,7 @@ export const en: Dictionary = {
         subtitle: "A champion's mindset",
         text:
           "Motivation Days, inspiring panels, discipline and self-improvement: we shape minds, not just exam papers.",
-        bullets: ["Motivation Day 2 to 3 times a year", "Guest speakers & coaches", "Excellence galas"],
+        bullets: ["Motivation Day 2 to 3 times a year", "Guest speakers and coaches", "Excellence galas"],
       },
       {
         index: "04",
@@ -122,7 +114,7 @@ export const en: Dictionary = {
   },
 
   results: {
-    eyebrow: "03 — Our results",
+    eyebrow: "Our results",
     title: "Results that speak for themselves.",
     lead:
       "Every year, our students confirm the Excellence Group method. Here are the figures for the 2026 session and the trend since our beginnings.",
@@ -132,6 +124,7 @@ export const en: Dictionary = {
       { value: 2147, suffix: "", decimals: 0, label: "new graduates in 2026" },
       { value: 15, suffix: "", decimals: 0, label: "years of excellence" },
     ],
+    mentionsTitle: "BAC 2026 honours",
     mentions: [
       { value: "4", label: "with highest honours" },
       { value: "+31", label: "with high honours" },
@@ -140,7 +133,7 @@ export const en: Dictionary = {
     chartTitle: "Pass rate by session",
     chartBac: "Baccalaureate",
     chartBepc: "BEPC",
-    chartNote: "Pass rate of Excellence Group students, by academic year.",
+    chartNote: "Pass rate of Excellence Group students, by academic year. Hover a point for details.",
     laureatesTitle: "The 2026 laureates",
     laureatesLead: "The 35 best graduates of the class of 2026, across all centres.",
     rank: "Rank",
@@ -150,14 +143,14 @@ export const en: Dictionary = {
     mention: "Honours",
     mentionTB: "Highest honours",
     mentionB: "High honours",
-    showAll: "See all 35 laureates",
+    showAll: "Show all 35 laureates",
     showLess: "Collapse the list",
     pts: "pts",
     seriesShort: "Series",
   },
 
   bases: {
-    eyebrow: "04 — Our study centres",
+    eyebrow: "Our study centres",
     title: "23 centres, 5 cities, one standard.",
     lead:
       "From Abidjan to Bouaké, our study centres are located in the heart of neighbourhoods, inside partner schools, to stay as close as possible to students.",
@@ -167,17 +160,19 @@ export const en: Dictionary = {
       interior: "Rest of the country",
     },
     basesCount: (n: number) => `${n} centre${n > 1 ? "s" : ""}`,
-    mapLegend: "Our locations",
-    abidjanPin: "Abidjan · 17 centres",
-    findBase: "Find my centre",
+    legendBases: "Cities where we operate",
+    legendCities: "Reference cities",
+    findBase: "Find the nearest centre",
+    findBaseHint: "A tutor will guide you on WhatsApp.",
   },
 
   events: {
-    eyebrow: "05 — Our events",
+    eyebrow: "Our events",
     title: "A year set to the rhythm of excellence.",
     lead:
       "Beyond the classroom, Excellence Group brings a true community to life: motivation, sport, guidance and the celebration of success.",
     next: "Next event",
+    pastEditions: "Previous editions",
     items: [
       {
         key: "motivation",
@@ -185,7 +180,7 @@ export const en: Dictionary = {
         kicker: "Personal development",
         text:
           "Two to three times a year, speakers and coaches come to train students, tutors and staff. The founding event of the E-Group spirit.",
-        meta: "December & April · Koumassi, Adjamé",
+        meta: "December and April · Koumassi, Adjamé",
       },
       {
         key: "afterbac",
@@ -201,7 +196,7 @@ export const en: Dictionary = {
         kicker: "Career day",
         text:
           "School presentations, panels and stand visits to help new graduates choose their programme and institution.",
-        meta: "Late July · Koumassi & Cocody",
+        meta: "Late July · Koumassi and Cocody",
       },
       {
         key: "brevetes",
@@ -217,40 +212,37 @@ export const en: Dictionary = {
         kicker: "Gala of excellence",
         text:
           "The gala dinner of the new graduates. 8th edition: 600+ guests, artists, a guest of honour and the best students of each centre rewarded.",
-        meta: "25 July · Espace Crystal, Marcory Zone 4",
+        meta: "25 July 2026, 7 pm · Espace Crystal, Marcory Zone 4",
       },
     ],
   },
 
   learning: {
-    eyebrow: "06 — EG Learning",
+    eyebrow: "EG Learning",
     title: "Learn anywhere, anytime.",
     lead:
       "The EgroupLearning platform and app extend in-person classes: resources, exercises and progress tracking, available on the web and on mobile.",
     features: [
-      { title: "Web, Android & iOS", text: "Access your courses from a browser or the EgroupLearning app." },
+      { title: "Web, Android and iOS", text: "Access your courses from a browser or the EgroupLearning app." },
       { title: "Personal access", text: "Your login details are provided by your tutor as soon as you enrol." },
-      { title: "Courses & assessments", text: "Course materials, exercises and tests to keep progressing all year long." },
+      { title: "Courses and assessments", text: "Course materials, exercises and tests to keep progressing all year long." },
     ],
     ctaWeb: "Open the platform",
     ctaStores: "Download the app",
+    accessTitle: "Platform access",
+    accessUrlLabel: "Address",
     scheduleTitle: "In-person class schedule",
+    scheduleDays: "Days",
+    scheduleHours: "Hours",
     schedule: [
-      { days: "Monday · Tuesday · Thursday · Friday", hours: "6 pm – 9 pm" },
-      { days: "Wednesday · Sunday", hours: "3 pm – 7 pm" },
+      { days: "Monday, Tuesday, Thursday, Friday", hours: "6 pm – 9 pm" },
+      { days: "Wednesday, Sunday", hours: "3 pm – 7 pm" },
       { days: "Saturday", hours: "8 am – 7 pm", note: "with two breaks" },
     ],
-    phone: {
-      greeting: "Hello, Eva 👋",
-      sub: "Ready for the 2027 BAC?",
-      progressLabel: "Term progress",
-      courses: ["Mathematics · Functions", "Physics · Electricity", "Philosophy · Consciousness"],
-      nextTest: "Next test in 6 days",
-    },
   },
 
   testimonials: {
-    eyebrow: "07 — Testimonials",
+    eyebrow: "Testimonials",
     title: "They lived the EGROUP experience.",
     items: [
       {
@@ -278,12 +270,10 @@ export const en: Dictionary = {
         role: "Excellence Group alumna",
       },
     ],
-    prev: "Previous testimonial",
-    next: "Next testimonial",
   },
 
   cta: {
-    eyebrow: "08 — Enrolment",
+    eyebrow: "Enrolment",
     title: "Ready to join the EGROUP family?",
     lead:
       "Message us on WhatsApp or give us a call: a tutor will guide you to the centre nearest to you and answer all your questions.",
@@ -291,7 +281,11 @@ export const en: Dictionary = {
     call: "Call us",
     whatsappMessage:
       "Hello Excellence Group, I would like information about reinforcement courses and enrolment.",
-    note: "Quick reply · Every day",
+    note: "Quick reply, every day.",
+    contactTitle: "Get in touch",
+    whatsappLabel: "WhatsApp",
+    phoneLabel: "Phone",
+    locationLabel: "Location",
   },
 
   footer: {
@@ -303,9 +297,7 @@ export const en: Dictionary = {
     followTitle: "Follow us",
     location: "Abidjan, Côte d'Ivoire",
     rights: "All rights reserved.",
-    madeWith: "Crafted with a passion for excellence.",
-    legal: "Legal notice",
-    privacy: "Privacy",
+    backToTop: "Back to top",
   },
 
   notFound: {

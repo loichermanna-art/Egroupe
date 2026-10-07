@@ -1,34 +1,23 @@
 import { cn } from "@/lib/utils";
-import { Reveal, SplitWords } from "./Reveal";
 
 type Props = {
   eyebrow: string;
   title: string;
   lead?: string;
-  align?: "left" | "center";
+  /** Variante sur fond bordeaux. */
+  dark?: boolean;
   className?: string;
-  light?: boolean;
-  titleClassName?: string;
+  as?: "h1" | "h2";
 };
 
-/** En-tête de section : eyebrow doré, titre display animé mot à mot, chapeau. */
-export function SectionHeader({ eyebrow, title, lead, align = "left", className, titleClassName }: Props) {
+/** En-tête de section : double filet or, intitulé, titre, chapeau. */
+export function SectionHeader({ eyebrow, title, lead, dark = false, className, as: Tag = "h2" }: Props) {
   return (
-    <div className={cn("max-w-4xl", align === "center" && "mx-auto text-center", className)}>
-      <Reveal y={16} duration={0.8}>
-        <p className={cn("eyebrow flex items-center gap-4", align === "center" && "justify-center")}>
-          <span className="inline-block h-px w-10 bg-or/70" aria-hidden />
-          {eyebrow}
-        </p>
-      </Reveal>
-      <h2 className={cn("display-2 mt-6 text-ivoire", titleClassName)}>
-        <SplitWords text={title} stagger={0.035} />
-      </h2>
-      {lead && (
-        <Reveal delay={0.25} y={20}>
-          <p className={cn("lead mt-6 max-w-2xl", align === "center" && "mx-auto")}>{lead}</p>
-        </Reveal>
-      )}
-    </div>
+    <header className={cn("max-w-2xl", className)}>
+      <span className={dark ? "rule-gold-light" : "rule-gold"} aria-hidden />
+      <p className={cn("t-eyebrow mt-4", dark && "text-gold-light")}>{eyebrow}</p>
+      <Tag className={cn("t-h2 mt-3", dark ? "text-white" : "text-ink")}>{title}</Tag>
+      {lead && <p className={cn("t-lead mt-5", dark && "text-white/80")}>{lead}</p>}
+    </header>
   );
 }

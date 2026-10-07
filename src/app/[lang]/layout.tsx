@@ -1,17 +1,14 @@
 import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
 
-import "@fontsource-variable/outfit";
-import "@fontsource-variable/playfair-display";
-import "@fontsource-variable/playfair-display/wght-italic.css";
+import "@fontsource-variable/inter";
+import "@fontsource-variable/source-serif-4";
+import "@fontsource-variable/source-serif-4/wght-italic.css";
 import "../globals.css";
 
 import { isLocale, locales, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { site } from "@/data/site";
-import { SmoothScroll } from "@/components/providers/SmoothScroll";
-import { Cursor } from "@/components/layout/Cursor";
-import { Preloader } from "@/components/layout/Preloader";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 
@@ -78,7 +75,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 }
 
 export const viewport: Viewport = {
-  themeColor: "#0a0506",
+  themeColor: "#8f0219",
   width: "device-width",
   initialScale: 1,
 };
@@ -95,24 +92,19 @@ export default async function RootLayout({
   const dict = await getDictionary(lang);
 
   return (
-    <html lang={lang} className="grain" suppressHydrationWarning>
-      <head>
-        {/* Avant le premier rendu : masque l'intro si elle a déjà été vue dans la session */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html:
-              'try{if(sessionStorage.getItem("eg-intro-seen")||matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.dataset.intro="done"}}catch(e){}',
-          }}
-        />
-      </head>
-      <body className="min-h-dvh flex flex-col">
-        <SmoothScroll>
-          <Preloader words={dict.preloader.words} since={dict.preloader.since} />
-          <Cursor />
-          <Navbar locale={lang} dict={dict.nav} />
-          <main className="flex-1">{children}</main>
-          <Footer locale={lang} dict={dict} />
-        </SmoothScroll>
+    <html lang={lang}>
+      <body className="flex min-h-dvh flex-col">
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-[var(--radius-sm)] focus:bg-red focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-white"
+        >
+          {dict.nav.skip}
+        </a>
+        <Navbar locale={lang} dict={dict.nav} />
+        <main id="main" className="flex-1">
+          {children}
+        </main>
+        <Footer locale={lang} dict={dict} />
       </body>
     </html>
   );

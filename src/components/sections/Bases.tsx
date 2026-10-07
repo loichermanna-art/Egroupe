@@ -1,6 +1,6 @@
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
-import { basesByZone, zoneOrder, mapPins, type ZoneKey } from "@/data/bases";
+import { basesByZone, zoneOrder, mapPins, referenceCities, type ZoneKey } from "@/data/bases";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { BasesExplorer, type ZoneView } from "./BasesExplorer";
 
@@ -21,15 +21,20 @@ export function Bases({ locale, dict }: Props) {
   const pins = mapPins.map((p) => ({ ...p, countLabel: dict.basesCount(p.count) }));
 
   return (
-    <section id="bases" className="relative overflow-hidden bg-noir-2 py-28 md:py-40">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-or/40 to-transparent" />
-      <div className="container-x">
+    <section id="bases" className="section border-y border-line bg-cream">
+      <div className="wrap">
         <SectionHeader eyebrow={dict.eyebrow} title={dict.title} lead={dict.lead} />
         <BasesExplorer
           locale={locale}
           zones={zones}
           pins={pins}
-          labels={{ mapLegend: dict.mapLegend, abidjanPin: dict.abidjanPin, findBase: dict.findBase }}
+          cities={referenceCities}
+          labels={{
+            legendBases: dict.legendBases,
+            legendCities: dict.legendCities,
+            findBase: dict.findBase,
+            findBaseHint: dict.findBaseHint,
+          }}
         />
       </div>
     </section>
