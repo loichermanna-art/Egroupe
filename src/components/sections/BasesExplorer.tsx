@@ -32,7 +32,7 @@ export function BasesExplorer({ zones, pins, cities, labels }: Props) {
   const current = zones.find((z) => z.key === zone) ?? zones[0];
 
   return (
-    <div className="mt-12 grid gap-12 lg:mt-16 lg:grid-cols-12 lg:gap-10">
+    <div className="mt-10 grid gap-12 lg:mt-12 lg:grid-cols-12 lg:gap-10">
       {/* ---- Liste ---- */}
       <div className="lg:col-span-6">
         <div role="tablist" aria-label={labels.legendBases} className="flex flex-wrap gap-x-6 gap-y-2 border-b border-line-2">
@@ -80,7 +80,7 @@ export function BasesExplorer({ zones, pins, cities, labels }: Props) {
           <Button href={site.whatsappUrl} variant="secondary">
             {labels.findBase}
           </Button>
-          <p className="t-caption">{labels.findBaseHint}</p>
+          <p className="t-caption max-w-xs">{labels.findBaseHint}</p>
         </div>
       </div>
 

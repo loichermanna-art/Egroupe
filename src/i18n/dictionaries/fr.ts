@@ -25,35 +25,30 @@ export const fr = {
   },
 
   hero: {
-    eyebrow: "Structure de formation · Abidjan, Côte d'Ivoire",
-    titleA: "Révéler",
-    titleEm: "l'excellence",
-    titleB: "qui sommeille en chaque élève.",
+    title: "Cours de renforcement scolaire et universitaire en Côte d'Ivoire",
     lead:
-      "Cours de renforcement scolaire et universitaire, développement personnel et entrepreneuriat. Depuis 2011, nous accompagnons des milliers d'élèves vers la réussite — du BEPC au BAC, et bien au-delà.",
-    ctaPrimary: "Rejoindre la famille EGROUP",
-    ctaSecondary: "Voir nos résultats 2026",
-    photoCaption: "Les encadreurs Excellence Group à Koumassi — photo Romaric Assemien",
-    photoTag: "Depuis 2011",
-    highlightValue: "90,02 %",
-    highlightLabel: "de réussite au BAC 2026",
+      "Depuis 2011, Excellence Group accompagne élèves et étudiants dans 23 bases d'étude — à Abidjan, Grand-Bassam, Yamoussoukro, Bouaké et Arrah — et en ligne avec EG Learning. Le développement personnel et l'initiation à l'entrepreneuriat complètent les cours.",
+    ctaPrimary: "S'inscrire via WhatsApp",
+    ctaSecondary: "Trouver une base",
+    noticeLabel: "Session 2026",
+    notice: "90,02 % de réussite au BAC et 93,75 % au BEPC pour nos élèves.",
+    noticeLink: "Voir le détail des résultats",
+    photoCaption: "Les encadreurs Excellence Group à Koumassi, Abidjan — photo Romaric Assemien",
   },
 
   facts: [
-    { value: "15 ans", label: "d'existence" },
+    { value: "2011", label: "année de création, à Abidjan" },
     { value: "23", label: "bases d'étude" },
+    { value: "5", label: "villes en Côte d'Ivoire" },
     { value: "2 147", label: "nouveaux bacheliers en 2026" },
-    { value: "90,02 %", label: "de réussite au BAC 2026" },
-    { value: "93,75 %", label: "de réussite au BEPC 2026" },
   ],
 
   about: {
-    eyebrow: "Qui sommes-nous",
-    title: "Une structure complète, pas seulement des cours.",
+    title: "Une structure de formation créée en 2011 à Abidjan",
     body1:
-      "Créée en 2011, Excellence Group est une structure de formation spécialisée en cours de renforcement des capacités scolaires et universitaires, en développement personnel et en initiation à l'entrepreneuriat.",
+      "Excellence Group est une structure de formation spécialisée en cours de renforcement des capacités scolaires et universitaires, en développement personnel et en initiation à l'entrepreneuriat.",
     body2:
-      "Nos formations sont dispensées en présentiel dans nos bases d'étude et en ligne via la plateforme EG Learning. À travers E-Group Fondation, nous offrons également des formations gratuites.",
+      "Les formations sont dispensées en présentiel dans nos bases d'étude et en ligne via la plateforme EG Learning. À travers E-Group Fondation, nous proposons également des formations gratuites.",
     missionTitle: "Notre mission",
     manifesto:
       "Développer le niveau éducatif et moral des élèves, des étudiants et de toute personne ayant perdu l'envie de réussir — avec discipline, travail et foi en la réussite.",
@@ -66,43 +61,52 @@ export const fr = {
       "Transmettre la démarche entrepreneuriale.",
       "Intégrer de jeunes managers dans le monde du travail.",
     ],
-    yearsValue: "15",
-    yearsLabel: "années au service de la réussite des élèves",
+    factsTitle: "En bref",
+    facts: [
+      { label: "Création", value: "2011, Abidjan" },
+      { label: "Activités", value: "Cours de renforcement, développement personnel, entrepreneuriat" },
+      { label: "Publics", value: "Collégiens, lycéens, étudiants" },
+      { label: "Bases d'étude", value: "23, dans 5 villes" },
+      { label: "Formats", value: "Présentiel et en ligne (EG Learning)" },
+      { label: "Fondation", value: "E-Group Fondation — formations gratuites" },
+    ],
+    valuesTitle: "Nos valeurs",
     values: ["Discipline", "Travail", "Réussite"],
   },
 
   pillars: {
-    eyebrow: "Nos programmes",
-    title: "Quatre piliers, une même exigence.",
-    lead: "De la 6ᵉ à l'université, chaque programme répond à un besoin précis : comprendre, progresser, s'orienter et préparer l'après.",
+    title: "Nos programmes",
+    lead:
+      "De la 6ᵉ à l'université, quatre domaines de formation complémentaires. Les cours de renforcement en sont le socle ; l'orientation, le développement personnel et l'entrepreneuriat préparent la suite.",
+    bulletsTitle: "Au programme",
     items: [
       {
-        index: "01",
+        key: "school",
         title: "Renforcement scolaire",
         subtitle: "Du collège à la Terminale",
         text:
-          "Des cours de renforcement intensifs dans nos 23 bases, dispensés par des professeurs et des encadreurs passionnés. Les classes d'examen — 3ᵉ et Terminale — sont au cœur de notre méthode.",
+          "Des cours de renforcement intensifs dans nos 23 bases, dispensés par des professeurs et des encadreurs expérimentés. Les classes d'examen — 3ᵉ et Terminale — sont au cœur de la méthode : cours collectifs, séances particulières et tests d'évaluation réguliers.",
         bullets: ["Cours collectifs et particuliers", "Tests d'évaluation tous les 3 mois", "Suivi par un encadreur dédié"],
       },
       {
-        index: "02",
-        title: "Universitaire & orientation",
+        key: "university",
+        title: "Universitaire et orientation",
         subtitle: "Choisir la bonne voie",
         text:
           "Renforcement universitaire, semaines de l'orientation et journées carrière : nous aidons les nouveaux bacheliers à choisir les filières et les écoles qui préparent réellement leur avenir.",
         bullets: ["Semaine de l'orientation", "Écoles partenaires et visites de stands", "Mentorat par les aînés"],
       },
       {
-        index: "03",
+        key: "personal",
         title: "Développement personnel",
-        subtitle: "Un mental de champion",
+        subtitle: "Méthode, discipline et motivation",
         text:
-          "Motivation Days, panels inspirants, discipline et dépassement de soi : nous formons des esprits, pas seulement des copies d'examen.",
+          "Motivation Days, panels et interventions de coachs : nous travaillons l'état d'esprit autant que les connaissances, avec les élèves comme avec les encadreurs.",
         bullets: ["Motivation Day 2 à 3 fois par an", "Panélistes et coachs invités", "Galas de l'excellence"],
       },
       {
-        index: "04",
-        title: "Entrepreneuriat & Fondation",
+        key: "entrepreneurship",
+        title: "Entrepreneuriat et Fondation",
         subtitle: "Préparer l'après",
         text:
           "Initiation à la démarche entrepreneuriale par des experts, intégration des jeunes managers dans le monde du travail et formations gratuites via E-Group Fondation.",
@@ -112,16 +116,16 @@ export const fr = {
   },
 
   results: {
-    eyebrow: "Nos résultats",
-    title: "Des résultats qui parlent d'eux-mêmes.",
+    title: "Résultats aux examens",
     lead:
-      "Chaque année, nos élèves confirment la méthode Excellence Group. Voici les chiffres de la session 2026 et l'évolution depuis nos débuts.",
-    counters: [
-      { value: 90.02, suffix: " %", decimals: 2, label: "de réussite au BAC 2026" },
-      { value: 93.75, suffix: " %", decimals: 2, label: "de réussite au BEPC 2026" },
-      { value: 2147, suffix: "", decimals: 0, label: "nouveaux bacheliers en 2026" },
-      { value: 15, suffix: "", decimals: 0, label: "années d'excellence" },
-    ],
+      "Taux de réussite des élèves Excellence Group aux examens nationaux : session 2026 et évolution depuis la première promotion, en 2012.",
+    sessionLabel: "Session 2026",
+    previousLabel: "Session 2025 :",
+    figures: {
+      bac: "de réussite au Baccalauréat",
+      bepc: "de réussite au BEPC",
+      graduates: "nouveaux bacheliers",
+    },
     mentionsTitle: "Mentions au BAC 2026",
     mentions: [
       { value: "4", label: "mentions Très Bien" },
@@ -131,9 +135,10 @@ export const fr = {
     chartTitle: "Taux de réussite par session",
     chartBac: "Baccalauréat",
     chartBepc: "BEPC",
-    chartNote: "Taux de réussite des élèves Excellence Group, par année académique. Survolez un point pour le détail.",
-    laureatesTitle: "Les lauréats 2026",
-    laureatesLead: "Les 35 meilleurs bacheliers de la promotion 2026, toutes bases confondues.",
+    chartNote: "Survolez ou sélectionnez un point pour afficher le taux de la session.",
+    source: "Source : bilan interne Excellence Group, session 2026.",
+    laureatesTitle: "Les 35 meilleurs bacheliers 2026",
+    laureatesLead: "Classement toutes bases confondues, d'après le total de points obtenu au Baccalauréat.",
     rank: "Rang",
     name: "Nom",
     series: "Série",
@@ -143,15 +148,14 @@ export const fr = {
     mentionB: "Bien",
     showAll: "Afficher les 35 lauréats",
     showLess: "Réduire la liste",
+    shownOf: "{shown} lauréats affichés sur {total}",
     pts: "pts",
-    seriesShort: "Série",
   },
 
   bases: {
-    eyebrow: "Nos bases d'étude",
-    title: "23 bases, 5 villes, une même exigence.",
+    title: "Nos bases d'étude",
     lead:
-      "D'Abidjan à Bouaké, nos bases d'étude sont installées au cœur des quartiers, dans des établissements partenaires, pour rester au plus près des élèves.",
+      "23 bases dans 5 villes, installées dans des établissements partenaires au cœur des quartiers. Sélectionnez une zone pour afficher la liste des bases et leur adresse.",
     zones: {
       south: "Abidjan Sud",
       north: "Abidjan Nord",
@@ -160,16 +164,16 @@ export const fr = {
     basesCount: (n: number) => `${n} base${n > 1 ? "s" : ""}`,
     legendBases: "Villes où nous sommes présents",
     legendCities: "Villes repères",
-    findBase: "Trouver la base la plus proche",
-    findBaseHint: "Un encadreur vous oriente par WhatsApp.",
+    findBase: "Demander la base la plus proche",
+    findBaseHint: "Indiquez votre quartier sur WhatsApp : un encadreur vous oriente.",
   },
 
   events: {
-    eyebrow: "Nos événements",
-    title: "Une année rythmée par l'excellence.",
+    title: "Événements de l'année",
     lead:
-      "Au-delà des cours, Excellence Group fait vivre une véritable communauté : motivation, sport, orientation et célébration des réussites.",
+      "En plus des cours, cinq rendez-vous rythment l'année scolaire : motivation, sport, orientation et célébration des réussites.",
     next: "Prochain rendez-vous",
+    datesNote: "Les dates de la prochaine saison sont annoncées sur nos réseaux :",
     pastEditions: "Éditions précédentes",
     items: [
       {
@@ -201,7 +205,7 @@ export const fr = {
         title: "Gala des Brevetés",
         kicker: "Célébration",
         text:
-          "La célébration des élèves de 3ᵉ admis au BEPC après une année de travail acharné — et la récompense des meilleurs de chaque base.",
+          "La célébration des élèves de 3ᵉ admis au BEPC après une année de travail — et la récompense des meilleurs de chaque base.",
         meta: "Août · Abidjan",
       },
       {
@@ -216,16 +220,15 @@ export const fr = {
   },
 
   learning: {
-    eyebrow: "EG Learning",
-    title: "Apprenez partout, à tout moment.",
+    title: "EG Learning, la plateforme en ligne",
     lead:
-      "La plateforme et l'application EgroupLearning prolongent les cours en présentiel : ressources, exercices et suivi, accessibles sur le web et sur mobile.",
+      "La plateforme et l'application EgroupLearning prolongent les cours en présentiel : supports, exercices et suivi, accessibles sur le web et sur mobile.",
     features: [
       { title: "Web, Android et iOS", text: "Accédez à vos cours depuis un navigateur ou l'application EgroupLearning." },
       { title: "Accès personnalisé", text: "Vos identifiants vous sont remis par votre encadreur dès l'inscription." },
       { title: "Cours et évaluations", text: "Supports de cours, exercices et tests pour progresser toute l'année." },
     ],
-    ctaWeb: "Ouvrir la plateforme",
+    ctaWeb: "Accéder à la plateforme",
     ctaStores: "Télécharger l'application",
     accessTitle: "Accès à la plateforme",
     accessUrlLabel: "Adresse",
@@ -240,8 +243,8 @@ export const fr = {
   },
 
   testimonials: {
-    eyebrow: "Témoignages",
-    title: "Ils ont vécu l'expérience EGROUP.",
+    title: "Témoignages",
+    lead: "Paroles d'élèves et d'étudiants passés par Excellence Group.",
     items: [
       {
         quote:
@@ -271,10 +274,9 @@ export const fr = {
   },
 
   cta: {
-    eyebrow: "Inscriptions",
-    title: "Prêt à rejoindre la famille EGROUP ?",
+    title: "Inscriptions et renseignements",
     lead:
-      "Écrivez-nous sur WhatsApp ou appelez-nous : un encadreur vous orientera vers la base la plus proche de chez vous et répondra à toutes vos questions.",
+      "Pour rejoindre la famille EGROUP, écrivez-nous sur WhatsApp ou appelez-nous : un encadreur vous oriente vers la base la plus proche de chez vous et répond à vos questions.",
     whatsapp: "Écrire sur WhatsApp",
     call: "Appeler",
     whatsappMessage:
@@ -284,6 +286,8 @@ export const fr = {
     whatsappLabel: "WhatsApp",
     phoneLabel: "Téléphone",
     locationLabel: "Localisation",
+    hoursLabel: "Horaires des cours",
+    hoursLink: "Voir les horaires",
   },
 
   footer: {
@@ -299,6 +303,7 @@ export const fr = {
   },
 
   notFound: {
+    code: "Erreur 404",
     title: "Page introuvable",
     text: "La page que vous cherchez n'existe pas ou a été déplacée.",
     back: "Retour à l'accueil",

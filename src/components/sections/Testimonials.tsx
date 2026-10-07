@@ -1,42 +1,45 @@
 import type { Dictionary } from "@/i18n/get-dictionary";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { Reveal } from "@/components/ui/Reveal";
-import { cn } from "@/lib/utils";
 
 type Props = { dict: Dictionary["testimonials"] };
 
-/** Témoignages : tous visibles, en grille éditoriale séparée par des filets. */
+/**
+ * Témoignages : le premier en grand à gauche, les autres en colonne à droite,
+ * séparés par des filets. Rien d'autre : pas d'avatars, pas de notes.
+ */
 export function Testimonials({ dict }: Props) {
+  const [first, ...rest] = dict.items;
+
   return (
     <section id="testimonials" className="section border-t border-line bg-white">
       <div className="wrap">
-        <SectionHeader eyebrow={dict.eyebrow} title={dict.title} />
+        <SectionHeader title={dict.title} lead={dict.lead} />
 
-        <ul className="mt-12 grid border-t border-line md:mt-14 md:grid-cols-2">
-          {dict.items.map((t, i) => (
-            <Reveal
-              key={t.name + i}
-              as="li"
-              delay={(i % 2) * 0.06}
-              className={cn(
-                "border-b border-line py-8 md:py-10",
-                i % 2 === 0 ? "md:border-r md:pr-10 lg:pr-14" : "md:pl-10 lg:pl-14",
-              )}
-            >
-              <figure>
-                <blockquote className="font-serif text-[1.1875rem] leading-[1.5] text-ink md:text-[1.25rem]">
-                  <span className="text-gold" aria-hidden>« </span>
-                  {t.quote}
-                  <span className="text-gold" aria-hidden> »</span>
-                </blockquote>
-                <figcaption className="mt-5 text-[0.9375rem]">
-                  <span className="font-medium text-ink">{t.name}</span>
-                  <span className="text-ink-3"> — {t.role}</span>
-                </figcaption>
-              </figure>
-            </Reveal>
-          ))}
-        </ul>
+        <div className="mt-10 grid gap-10 border-t border-line pt-8 lg:grid-cols-12 lg:gap-12">
+          <figure className="lg:col-span-6">
+            <blockquote className="font-serif text-[1.375rem] leading-[1.45] text-ink md:text-[1.5rem]">
+              {first.quote}
+            </blockquote>
+            <figcaption className="mt-5 text-[0.9375rem]">
+              <span className="font-medium text-ink">{first.name}</span>
+              <span className="text-ink-3"> — {first.role}</span>
+            </figcaption>
+          </figure>
+
+          <ul className="lg:col-span-5 lg:col-start-8">
+            {rest.map((t, i) => (
+              <li key={t.name + i} className={["py-5 first:pt-0 last:pb-0", i > 0 ? "border-t border-line" : ""].join(" ")}>
+                <figure>
+                  <blockquote className="text-[1rem] leading-[1.65] text-ink-2">{t.quote}</blockquote>
+                  <figcaption className="mt-3 text-[0.875rem]">
+                    <span className="font-medium text-ink">{t.name}</span>
+                    <span className="text-ink-3"> — {t.role}</span>
+                  </figcaption>
+                </figure>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </section>
   );

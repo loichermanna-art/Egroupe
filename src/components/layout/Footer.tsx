@@ -1,6 +1,5 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowUp } from "lucide-react";
 
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
@@ -30,30 +29,23 @@ export function Footer({ locale, dict }: Props) {
 
   return (
     <footer className="bg-ink text-paper/80">
-      <div className="wrap pb-10 pt-16 md:pt-20">
-        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr] lg:gap-10">
+      <div className="wrap pb-8 pt-14 md:pt-16">
+        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr] lg:gap-8">
           {/* Marque */}
           <div>
             <Link href={home} className="inline-flex items-center gap-3">
-              <Image
-                src="/images/brand/logo-excellence-group-192.png"
-                alt={site.name}
-                width={56}
-                height={56}
-                className="h-14 w-14"
-              />
-              <span className="font-serif text-xl font-semibold leading-tight text-white">
-                Excellence Group
-              </span>
+              <Image src="/images/brand/logo-excellence-group-192.png" alt={site.name} width={48} height={48} className="h-12 w-12" />
+              <span className="font-serif text-[1.1875rem] font-semibold leading-tight text-white">{site.name}</span>
             </Link>
-            <p className="mt-5 max-w-sm text-[0.9375rem] leading-relaxed">{dict.footer.description}</p>
-            <p className="mt-4 text-[0.8125rem] font-medium uppercase tracking-[0.08em] text-gold-light">{dict.footer.tagline}</p>
+            <span className="rule-gold mt-5" aria-hidden />
+            <p className="mt-4 max-w-sm text-[0.9375rem] leading-relaxed">{dict.footer.description}</p>
+            <p className="mt-3 text-[0.9375rem] text-gold-light">{dict.footer.tagline}</p>
           </div>
 
           {/* Navigation */}
           <nav aria-label={dict.footer.navTitle}>
-            <h2 className="text-[0.8125rem] font-semibold uppercase tracking-[0.08em] text-white">{dict.footer.navTitle}</h2>
-            <ul className="mt-5 space-y-2.5 text-[0.9375rem]">
+            <h2 className="t-label text-white">{dict.footer.navTitle}</h2>
+            <ul className="mt-4 space-y-2 text-[0.9375rem]">
               {nav.map((l) => (
                 <li key={l.href}>
                   <Link href={l.href} className="transition-colors hover:text-white">
@@ -66,8 +58,8 @@ export function Footer({ locale, dict }: Props) {
 
           {/* Contact */}
           <div>
-            <h2 className="text-[0.8125rem] font-semibold uppercase tracking-[0.08em] text-white">{dict.footer.contactTitle}</h2>
-            <ul className="mt-5 space-y-3 text-[0.9375rem]">
+            <h2 className="t-label text-white">{dict.footer.contactTitle}</h2>
+            <ul className="mt-4 space-y-2.5 text-[0.9375rem]">
               <li>
                 <a href={site.whatsappUrl} target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-white">
                   WhatsApp · {site.phonePrimary}
@@ -89,16 +81,11 @@ export function Footer({ locale, dict }: Props) {
 
           {/* Réseaux */}
           <div>
-            <h2 className="text-[0.8125rem] font-semibold uppercase tracking-[0.08em] text-white">{dict.footer.followTitle}</h2>
-            <ul className="mt-5 space-y-3 text-[0.9375rem]">
+            <h2 className="t-label text-white">{dict.footer.followTitle}</h2>
+            <ul className="mt-4 space-y-2.5 text-[0.9375rem]">
               {socials.map(({ href, label, handle, Icon }) => (
                 <li key={label}>
-                  <a
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group inline-flex items-center gap-3 transition-colors hover:text-white"
-                  >
+                  <a href={href} target="_blank" rel="noopener noreferrer" className="group inline-flex items-center gap-3 transition-colors hover:text-white">
                     <Icon className="h-4 w-4 text-paper/60 transition-colors group-hover:text-white" />
                     <span>
                       {label} <span className="text-paper/50">· {handle}</span>
@@ -110,13 +97,12 @@ export function Footer({ locale, dict }: Props) {
           </div>
         </div>
 
-        <div className="mt-14 flex flex-col gap-4 border-t border-white/10 pt-6 text-[0.8125rem] text-paper/60 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-12 flex flex-col gap-3 border-t border-white/10 pt-5 text-[0.8125rem] text-paper/60 sm:flex-row sm:items-center sm:justify-between">
           <p>
             © {year} {site.name} — {dict.footer.rights}
           </p>
-          <a href="#main" className="inline-flex items-center gap-2 transition-colors hover:text-white">
-            <ArrowUp className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden />
-            {dict.footer.backToTop}
+          <a href="#top" className="transition-colors hover:text-white">
+            {dict.footer.backToTop} ↑
           </a>
         </div>
       </div>

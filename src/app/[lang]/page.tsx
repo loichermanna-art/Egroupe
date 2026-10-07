@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import { isLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { Hero } from "@/components/sections/Hero";
-import { KeyFacts } from "@/components/sections/KeyFacts";
 import { About } from "@/components/sections/About";
 import { Pillars } from "@/components/sections/Pillars";
 import { Results } from "@/components/sections/Results";
@@ -20,8 +19,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
 
   return (
     <>
-      <Hero locale={lang} dict={dict.hero} />
-      <KeyFacts items={dict.facts} />
+      <Hero locale={lang} dict={dict.hero} facts={dict.facts} />
       <About locale={lang} dict={dict.about} />
       <Pillars dict={dict.pillars} />
       <Results locale={lang} dict={dict.results} />
@@ -29,7 +27,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       <Events locale={lang} dict={dict.events} />
       <Learning dict={dict.learning} />
       <Testimonials dict={dict.testimonials} />
-      <FinalCta dict={dict.cta} location={dict.footer.location} />
+      <FinalCta locale={lang} dict={dict.cta} location={dict.footer.location} />
     </>
   );
 }

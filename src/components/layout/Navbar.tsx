@@ -4,14 +4,14 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { Menu, X, Phone, MessageCircle } from "lucide-react";
+import { Menu, X, Phone } from "lucide-react";
 
 import type { Locale } from "@/i18n/config";
 import { switchLocalePath } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
 import { site } from "@/data/site";
 import { cn } from "@/lib/utils";
+import { WhatsAppIcon } from "@/components/ui/BrandIcons";
 
 type Props = { locale: Locale; dict: Dictionary["nav"] };
 
@@ -20,9 +20,7 @@ type SectionId = (typeof SECTION_IDS)[number];
 
 export function Navbar({ locale, dict }: Props) {
   const pathname = usePathname();
-  const reduced = useReducedMotion();
   const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const [active, setActive] = useState<SectionId | null>(null);
 
   const home = `/${locale}`;
@@ -36,15 +34,7 @@ export function Navbar({ locale, dict }: Props) {
     { id: "contact", label: dict.contact },
   ];
 
-  // Ombre légère une fois la page défilée
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  // Section active (soulignement du lien correspondant)
+  // Section visible → lien souligné
   useEffect(() => {
     const sections = SECTION_IDS.map((id) => document.getElementById(id)).filter((el): el is HTMLElement => !!el);
     if (!sections.length) return;
@@ -59,7 +49,7 @@ export function Navbar({ locale, dict }: Props) {
     return () => observer.disconnect();
   }, [pathname]);
 
-  // Menu mobile : échappe + verrouillage du défilement
+  // Menu mobile : touche Échap + verrouillage du défilement
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
@@ -75,7 +65,7 @@ export function Navbar({ locale, dict }: Props) {
 
   return (
     <>
-      {/* Barre utilitaire (desktop) */}
+      {/* Barre utilitaire (à partir de md) */}
       <div className="hidden bg-red-dark text-white md:block">
         <div className="wrap flex h-9 items-center justify-between text-[0.8125rem]">
           <div className="flex items-center gap-6">
@@ -85,13 +75,8 @@ export function Navbar({ locale, dict }: Props) {
                 {dict.phoneLabel} · {site.phonePrimary}
               </span>
             </a>
-            <a
-              href={site.whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 hover:text-gold-light"
-            >
-              <MessageCircle className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden />
+            <a href={site.whatsappUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 hover:text-gold-light">
+              <WhatsAppIcon className="h-3.5 w-3.5" />
               {dict.whatsapp}
             </a>
           </div>
@@ -100,22 +85,15 @@ export function Navbar({ locale, dict }: Props) {
       </div>
 
       {/* Barre principale */}
-      <header
-        className={cn(
-          "sticky top-0 z-50 border-b border-line bg-white/95 backdrop-blur-sm transition-shadow duration-200",
-          scrolled && "shadow-[0_10px_30px_-18px_rgba(27,21,23,0.35)]",
-        )}
-      >
+      <header className="sticky top-0 z-50 border-b border-line bg-white">
         <div className="wrap flex h-[var(--header-h)] items-center justify-between gap-6">
           <Link href={home} className="flex shrink-0 items-center gap-3" aria-label={`${site.name} — ${dict.home}`}>
             <Image src="/images/brand/icon-512.png" alt="" width={40} height={38} priority className="h-10 w-auto" />
-            <span className="font-serif text-[1.25rem] font-semibold leading-none tracking-tight text-ink">
-              Excellence <span className="text-red">Group</span>
-            </span>
+            <span className="font-serif text-[1.1875rem] font-semibold leading-none tracking-tight text-ink">{site.name}</span>
           </Link>
 
           <nav className="hidden lg:block" aria-label={dict.menu}>
-            <ul className="flex items-center gap-1">
+            <ul className="flex items-center">
               {links.map((l) => (
                 <li key={l.id}>
                   <Link
@@ -123,7 +101,7 @@ export function Navbar({ locale, dict }: Props) {
                     aria-current={active === l.id ? "true" : undefined}
                     className={cn(
                       "relative inline-flex h-[var(--header-h)] items-center px-3 text-[0.9375rem] text-ink-2 transition-colors hover:text-ink",
-                      "after:absolute after:inset-x-3 after:bottom-0 after:h-[2px] after:bg-red after:opacity-0 after:transition-opacity",
+                      "after:absolute after:inset-x-3 after:bottom-0 after:h-[2px] after:bg-red after:opacity-0",
                       active === l.id && "text-ink after:opacity-100",
                     )}
                   >
@@ -134,10 +112,22 @@ export function Navbar({ locale, dict }: Props) {
             </ul>
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* Mobile : langue et téléphone visibles sans ouvrir le menu */}
+            <div className="md:hidden">
+              <LangSwitch locale={locale} currentPath={currentPath} label={dict.langLabel} dark={false} />
+            </div>
+            <a
+              href={`tel:+${site.phonePrimaryE164}`}
+              aria-label={`${dict.phoneLabel} · ${site.phonePrimary}`}
+              className="inline-flex h-10 w-10 items-center justify-center border border-line text-ink hover:bg-cream md:hidden"
+            >
+              <Phone className="h-4 w-4" strokeWidth={1.75} aria-hidden />
+            </a>
+
             <Link
               href={`${home}#contact`}
-              className="hidden h-10 items-center rounded-[var(--radius-sm)] bg-red px-4 text-[0.9375rem] font-medium text-white shadow-[inset_0_-1px_0_rgba(0,0,0,0.18)] transition-colors hover:bg-red-dark md:inline-flex"
+              className="hidden h-10 items-center bg-red px-4 text-[0.9375rem] font-medium text-white shadow-[inset_0_-1px_0_rgba(0,0,0,0.18)] transition-colors hover:bg-red-dark md:inline-flex"
             >
               {dict.cta}
             </Link>
@@ -147,7 +137,7 @@ export function Navbar({ locale, dict }: Props) {
               aria-expanded={open}
               aria-controls="mobile-menu"
               aria-label={open ? dict.close : dict.menu}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-[var(--radius-sm)] border border-line text-ink hover:bg-cream lg:hidden"
+              className="inline-flex h-10 w-10 items-center justify-center border border-line text-ink hover:bg-cream lg:hidden"
             >
               {open ? <X className="h-5 w-5" strokeWidth={1.75} /> : <Menu className="h-5 w-5" strokeWidth={1.75} />}
             </button>
@@ -155,53 +145,47 @@ export function Navbar({ locale, dict }: Props) {
         </div>
 
         {/* Panneau mobile */}
-        <AnimatePresence>
-          {open && (
-            <motion.div
-              id="mobile-menu"
-              className="absolute inset-x-0 top-full max-h-[calc(100dvh-var(--header-h))] overflow-y-auto border-b border-line bg-white shadow-[0_24px_40px_-24px_rgba(27,21,23,0.35)] lg:hidden"
-              initial={reduced ? false : { opacity: 0, y: -6 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -6 }}
-              transition={{ duration: 0.18, ease: "easeOut" }}
-            >
-              <nav className="wrap py-3" aria-label={dict.menu}>
-                <ul className="divide-y divide-line">
-                  {links.map((l) => (
-                    <li key={l.id}>
-                      <Link
-                        href={`${home}#${l.id}`}
-                        onClick={() => setOpen(false)}
-                        className={cn(
-                          "flex items-center justify-between py-3.5 text-[1.0625rem] text-ink",
-                          active === l.id && "font-medium text-red",
-                        )}
-                      >
-                        {l.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-                <div className="mt-4 flex flex-col gap-3 border-t border-line pt-4">
-                  <Link
-                    href={`${home}#contact`}
-                    onClick={() => setOpen(false)}
-                    className="inline-flex h-12 items-center justify-center rounded-[var(--radius-sm)] bg-red text-[0.9375rem] font-medium text-white hover:bg-red-dark"
-                  >
-                    {dict.cta}
-                  </Link>
-                  <div className="flex items-center justify-between text-[0.9375rem]">
-                    <a href={`tel:+${site.phonePrimaryE164}`} className="inline-flex items-center gap-2 text-ink-2">
-                      <Phone className="h-4 w-4" strokeWidth={1.75} aria-hidden />
-                      {site.phonePrimary}
-                    </a>
-                    <LangSwitch locale={locale} currentPath={currentPath} label={dict.langLabel} onNavigate={() => setOpen(false)} dark={false} />
-                  </div>
+        {open && (
+          <div
+            id="mobile-menu"
+            className="menu-in absolute inset-x-0 top-full max-h-[calc(100dvh-var(--header-h))] overflow-y-auto border-b border-line bg-white lg:hidden"
+          >
+            <nav className="wrap py-2" aria-label={dict.menu}>
+              <ul className="divide-y divide-line">
+                {links.map((l) => (
+                  <li key={l.id}>
+                    <Link
+                      href={`${home}#${l.id}`}
+                      onClick={() => setOpen(false)}
+                      aria-current={active === l.id ? "true" : undefined}
+                      className={cn(
+                        "flex items-center justify-between py-3.5 text-[1.0625rem] text-ink",
+                        active === l.id && "font-medium text-red",
+                      )}
+                    >
+                      {l.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-3 flex flex-col gap-3 border-t border-line pb-4 pt-4">
+                <Link
+                  href={`${home}#contact`}
+                  onClick={() => setOpen(false)}
+                  className="inline-flex h-12 items-center justify-center bg-red text-[0.9375rem] font-medium text-white hover:bg-red-dark"
+                >
+                  {dict.cta}
+                </Link>
+                <div className="flex flex-wrap items-center justify-between gap-3 text-[0.9375rem]">
+                  <a href={site.whatsappUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-ink-2">
+                    <WhatsAppIcon className="h-4 w-4" />
+                    {dict.whatsapp} · {site.phonePrimary}
+                  </a>
                 </div>
-              </nav>
-            </motion.div>
-          )}
-        </AnimatePresence>
+              </div>
+            </nav>
+          </div>
+        )}
       </header>
     </>
   );
@@ -211,17 +195,15 @@ function LangSwitch({
   locale,
   currentPath,
   label,
-  onNavigate,
   dark = true,
 }: {
   locale: Locale;
   currentPath: string;
   label: string;
-  onNavigate?: () => void;
   dark?: boolean;
 }) {
   return (
-    <div className="inline-flex items-center gap-1 text-[0.8125rem] font-medium uppercase tracking-wide" aria-label={label}>
+    <div className="inline-flex items-center text-[0.8125rem] font-medium uppercase" aria-label={label}>
       {(["fr", "en"] as const).map((l, i) => (
         <span key={l} className="inline-flex items-center">
           {i > 0 && <span className={cn("mx-1", dark ? "text-white/40" : "text-line-2")}>/</span>}
@@ -229,10 +211,9 @@ function LangSwitch({
             href={switchLocalePath(currentPath, l)}
             hrefLang={l}
             lang={l}
-            onClick={onNavigate}
             aria-current={locale === l ? "true" : undefined}
             className={cn(
-              "px-0.5 transition-colors",
+              "px-1 py-2 transition-colors",
               dark
                 ? locale === l
                   ? "text-white underline decoration-gold-light underline-offset-4"

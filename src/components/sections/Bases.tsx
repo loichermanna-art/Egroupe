@@ -23,7 +23,7 @@ export function Bases({ locale, dict }: Props) {
   return (
     <section id="bases" className="section border-y border-line bg-cream">
       <div className="wrap">
-        <SectionHeader eyebrow={dict.eyebrow} title={dict.title} lead={dict.lead} />
+        <SectionHeader title={dict.title} lead={dict.lead} />
         <BasesExplorer
           locale={locale}
           zones={zones}

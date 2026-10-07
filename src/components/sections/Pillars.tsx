@@ -1,53 +1,61 @@
-import { BookOpenText, Compass, Flame, Briefcase, Check } from "lucide-react";
-
 import type { Dictionary } from "@/i18n/get-dictionary";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { Reveal } from "@/components/ui/Reveal";
-import { cn } from "@/lib/utils";
 
 type Props = { dict: Dictionary["pillars"] };
+type Item = Dictionary["pillars"]["items"][number];
 
-const icons = [BookOpenText, Compass, Flame, Briefcase];
+function BulletList({ title, bullets }: { title: string; bullets: string[] }) {
+  return (
+    <div>
+      <h4 className="t-label">{title}</h4>
+      <ul className="mt-2 space-y-1.5 text-[0.9375rem] text-ink">
+        {bullets.map((b) => (
+          <li key={b} className="flex gap-3">
+            <span className="mt-[0.7em] h-px w-3 shrink-0 bg-ink-3" aria-hidden />
+            <span>{b}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
 
+/**
+ * Programmes : le renforcement scolaire — cœur de l'activité — occupe toute
+ * la largeur ; les trois autres domaines suivent sur une rangée.
+ */
 export function Pillars({ dict }: Props) {
+  const [main, ...others] = dict.items as [Item, ...Item[]];
+
   return (
     <section id="programs" className="section bg-paper">
       <div className="wrap">
-        <SectionHeader eyebrow={dict.eyebrow} title={dict.title} lead={dict.lead} />
+        <SectionHeader layout="split" title={dict.title} lead={dict.lead} />
 
-        {/* Grille 2 × 2 séparée par des filets (pas de cartes) */}
-        <div className="mt-12 grid border-t border-line md:mt-16 md:grid-cols-2">
-          {dict.items.map((item, i) => {
-            const Icon = icons[i % icons.length];
-            return (
-              <Reveal
-                key={item.index}
-                as="article"
-                delay={(i % 2) * 0.06}
-                className={cn(
-                  "border-b border-line py-8 md:py-10",
-                  // Colonne de gauche : filet vertical + espacement à droite
-                  i % 2 === 0 ? "md:border-r md:pr-10 lg:pr-14" : "md:pl-10 lg:pl-14",
-                )}
-              >
-                <div className="flex items-center justify-between">
-                  <span className="font-serif text-[0.9375rem] text-red tabular-nums">{item.index}</span>
-                  <Icon className="h-5 w-5 text-gold" strokeWidth={1.5} aria-hidden />
-                </div>
-                <h3 className="t-h3 mt-5 text-ink">{item.title}</h3>
-                <p className="mt-1 text-[0.9375rem] font-medium text-ink-3">{item.subtitle}</p>
-                <p className="mt-4 max-w-[32rem] leading-[1.7] text-ink-2">{item.text}</p>
-                <ul className="mt-6 space-y-2.5">
-                  {item.bullets.map((b) => (
-                    <li key={b} className="flex items-start gap-3 text-[0.9375rem] text-ink">
-                      <Check className="mt-1 h-4 w-4 shrink-0 text-red" strokeWidth={2} aria-hidden />
-                      {b}
-                    </li>
-                  ))}
-                </ul>
-              </Reveal>
-            );
-          })}
+        {/* Programme principal */}
+        <article className="mt-10 grid gap-6 border-t-2 border-ink pt-7 md:mt-14 lg:grid-cols-12 lg:gap-10">
+          <div className="lg:col-span-7">
+            <h3 className="t-h3 text-ink">{main.title}</h3>
+            <p className="mt-1 text-[0.9375rem] text-ink-3">{main.subtitle}</p>
+            <p className="mt-4 max-w-[36rem] leading-[1.7] text-ink-2">{main.text}</p>
+          </div>
+          <div className="lg:col-span-4 lg:col-start-9 lg:pt-1">
+            <BulletList title={dict.bulletsTitle} bullets={main.bullets} />
+          </div>
+        </article>
+
+        {/* Autres programmes */}
+        <div className="mt-10 grid border-t border-line md:mt-12 md:grid-cols-3 md:gap-x-10">
+          {others.map((item, i) => (
+            <article key={item.key} className={["pt-6 pb-8 md:pb-0", i > 0 ? "border-t border-line md:border-t-0" : ""].join(" ")}>
+              <h3 className="t-h3 text-ink">{item.title}</h3>
+              <p className="mt-1 text-[0.9375rem] text-ink-3">{item.subtitle}</p>
+              <p className="mt-4 leading-[1.7] text-ink-2">{item.text}</p>
+              <div className="mt-5">
+                <BulletList title={dict.bulletsTitle} bullets={item.bullets} />
+              </div>
+            </article>
+          ))}
         </div>
       </div>
     </section>
