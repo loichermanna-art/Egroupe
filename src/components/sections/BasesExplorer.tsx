@@ -10,7 +10,7 @@ import { projectCI } from "@/data/map-ci";
 import { site } from "@/data/site";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
-import { COUNTRY_VIEW, MapCI, frameFor, type CameraTarget, type MapBaseView, type MapLabels, type MapPinView } from "@/components/ui/MapCI";
+import { COUNTRY_VIEW, MapCI, focusOn, frameFor, type CameraTarget, type MapBaseView, type MapLabels, type MapPinView } from "@/components/ui/MapCI";
 import { Reveal, Rule } from "@/components/motion/Reveal";
 import { EASE_OUT, useMotionContext } from "@/components/motion/MotionProvider";
 import { useSmoothScroll } from "@/components/motion/SmoothScroll";
@@ -44,10 +44,16 @@ const cityZone: Record<string, ZoneKey> = {
 
 const point = (b: MapBaseView) => projectCI(b.lat, b.lng);
 
+/** Cadrage d'ouverture : Abidjan (bases Sud + Nord), avant toute interaction. */
+function abidjanFrame(zones: ZoneView[]) {
+  const pts = zones.filter((z) => z.key !== "interior").flatMap((z) => z.bases.map(point));
+  return pts.length ? frameFor(pts, MAP_MAX_ZOOM) : COUNTRY_VIEW;
+}
+
 export function BasesExplorer({ zones, pins, cities, areaLabels, labels }: Props) {
   const [zone, setZone] = useState<ZoneKey>("south");
   const [activeBase, setActiveBase] = useState<string | null>(null);
-  const [camera, setCamera] = useState<CameraTarget>({ ...COUNTRY_VIEW, id: 0 });
+  const [camera, setCamera] = useState<CameraTarget>(() => ({ ...abidjanFrame(zones), id: 0 }));
   const tabsId = useId();
   const mapWrap = useRef<HTMLDivElement>(null);
   const { reduced } = useMotionContext();
@@ -90,8 +96,7 @@ export function BasesExplorer({ zones, pins, cities, areaLabels, labels }: Props
     setZone(base.zone);
     setActiveBase(id);
     if (fromList) bringMapIntoView();
-    const { x, y } = point(base);
-    fly({ cx: x, cy: y, k: baseZoom[base.zone] });
+    fly(focusOn(point(base), baseZoom[base.zone]));
   };
 
   const selectCity = (key: string) => {
