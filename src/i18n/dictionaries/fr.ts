@@ -37,11 +37,11 @@ export const fr = {
   },
 
   facts: [
-    { value: "2011", label: "année de création, à Abidjan" },
-    { value: "23", label: "bases d'étude" },
-    { value: "5", label: "villes en Côte d'Ivoire" },
-    { value: "2 147", label: "nouveaux bacheliers en 2026" },
-  ],
+    { value: "2011", label: "année de création, à Abidjan", count: null },
+    { value: "23", label: "bases d'étude", count: 23 },
+    { value: "5", label: "villes en Côte d'Ivoire", count: 5 },
+    { value: "2 147", label: "nouveaux bacheliers en 2026", count: 2147 },
+  ] as { value: string; label: string; count: number | null }[],
 
   about: {
     title: "Une structure de formation créée en 2011 à Abidjan",

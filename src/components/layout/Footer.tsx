@@ -5,6 +5,7 @@ import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
 import { site } from "@/data/site";
 import { FacebookIcon, InstagramIcon, LinkedinIcon, TikTokIcon } from "@/components/ui/BrandIcons";
+import { Reveal, Stagger, Item } from "@/components/motion/Reveal";
 
 type Props = { locale: Locale; dict: Dictionary };
 
@@ -30,9 +31,9 @@ export function Footer({ locale, dict }: Props) {
   return (
     <footer className="bg-ink text-paper/80">
       <div className="wrap pb-8 pt-14 md:pt-16">
-        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr] lg:gap-8">
+        <Stagger className="grid gap-10 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr] lg:gap-8" gap={0.1}>
           {/* Marque */}
-          <div>
+          <Item>
             <Link href={home} className="inline-flex items-center gap-3">
               <Image src="/images/brand/logo-excellence-group-192.png" alt={site.name} width={48} height={48} className="h-12 w-12" />
               <span className="font-serif text-[1.1875rem] font-semibold leading-tight text-white">{site.name}</span>
@@ -40,9 +41,10 @@ export function Footer({ locale, dict }: Props) {
             <span className="rule-gold mt-5" aria-hidden />
             <p className="mt-4 max-w-sm text-[0.9375rem] leading-relaxed">{dict.footer.description}</p>
             <p className="mt-3 text-[0.9375rem] text-gold-light">{dict.footer.tagline}</p>
-          </div>
+          </Item>
 
           {/* Navigation */}
+          <Item as="div">
           <nav aria-label={dict.footer.navTitle}>
             <h2 className="t-label text-white">{dict.footer.navTitle}</h2>
             <ul className="mt-4 space-y-2 text-[0.9375rem]">
@@ -55,9 +57,10 @@ export function Footer({ locale, dict }: Props) {
               ))}
             </ul>
           </nav>
+          </Item>
 
           {/* Contact */}
-          <div>
+          <Item>
             <h2 className="t-label text-white">{dict.footer.contactTitle}</h2>
             <ul className="mt-4 space-y-2.5 text-[0.9375rem]">
               <li>
@@ -77,10 +80,10 @@ export function Footer({ locale, dict }: Props) {
                 </a>
               </li>
             </ul>
-          </div>
+          </Item>
 
           {/* Réseaux */}
-          <div>
+          <Item>
             <h2 className="t-label text-white">{dict.footer.followTitle}</h2>
             <ul className="mt-4 space-y-2.5 text-[0.9375rem]">
               {socials.map(({ href, label, handle, Icon }) => (
@@ -94,17 +97,17 @@ export function Footer({ locale, dict }: Props) {
                 </li>
               ))}
             </ul>
-          </div>
-        </div>
+          </Item>
+        </Stagger>
 
-        <div className="mt-12 flex flex-col gap-3 border-t border-white/10 pt-5 text-[0.8125rem] text-paper/60 sm:flex-row sm:items-center sm:justify-between">
+        <Reveal kind="fade" delay={0.3} className="mt-12 flex flex-col gap-3 border-t border-white/10 pt-5 text-[0.8125rem] text-paper/60 sm:flex-row sm:items-center sm:justify-between">
           <p>
             © {year} {site.name} — {dict.footer.rights}
           </p>
           <a href="#top" className="transition-colors hover:text-white">
             {dict.footer.backToTop} ↑
           </a>
-        </div>
+        </Reveal>
       </div>
     </footer>
   );

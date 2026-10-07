@@ -18,8 +18,12 @@ type BaseProps = {
 type AnchorProps = BaseProps & { href: string; external?: boolean } & Omit<ComponentProps<"a">, "href" | "children">;
 type ButtonProps = BaseProps & { href?: undefined } & Omit<ComponentProps<"button">, "children">;
 
+/* Remplissage qui monte depuis le bas au survol (pseudo-élément), texte au-dessus */
+const fill =
+  "relative isolate overflow-hidden before:absolute before:inset-0 before:-z-10 before:origin-bottom before:scale-y-0 before:transition-transform before:duration-[420ms] before:ease-[cubic-bezier(0.22,1,0.36,1)] hover:before:scale-y-100 active:before:scale-y-100";
+
 const base =
-  "group inline-flex items-center justify-center gap-2 font-medium transition-[background-color,color,border-color,box-shadow] duration-150 ease-out select-none disabled:cursor-not-allowed disabled:opacity-50 aria-disabled:cursor-not-allowed aria-disabled:opacity-50";
+  "group inline-flex items-center justify-center gap-2 font-medium transition-[background-color,color,border-color,box-shadow] duration-300 ease-out select-none disabled:cursor-not-allowed disabled:opacity-50 aria-disabled:cursor-not-allowed aria-disabled:opacity-50 disabled:hover:before:scale-y-0";
 
 const sizes: Record<Size, string> = {
   sm: "h-9 px-3.5 text-[0.875rem] rounded-[var(--radius-sm)]",
@@ -28,15 +32,11 @@ const sizes: Record<Size, string> = {
 };
 
 const variants: Record<Variant, string> = {
-  primary:
-    "bg-red text-white shadow-[inset_0_-1px_0_rgba(0,0,0,0.18)] hover:bg-red-dark active:bg-red-deep",
-  secondary:
-    "border border-ink/25 bg-transparent text-ink hover:border-ink hover:bg-white active:bg-cream",
+  primary: `${fill} bg-red text-white shadow-[inset_0_-1px_0_rgba(0,0,0,0.18)] before:bg-red-deep`,
+  secondary: `${fill} border border-ink/30 bg-transparent text-ink hover:border-ink hover:text-paper before:bg-ink`,
   link: "h-auto px-0 text-red hover:text-red-dark rounded-none",
-  onDark:
-    "bg-white text-red-dark hover:bg-cream active:bg-gold-pale",
-  onDarkOutline:
-    "border border-white/40 text-white hover:border-white hover:bg-white/10",
+  onDark: `${fill} bg-white text-red-dark before:bg-cream`,
+  onDarkOutline: `${fill} border border-white/40 text-white hover:border-white hover:text-red-dark before:bg-white`,
   onDarkLink: "h-auto px-0 text-white hover:text-gold-light rounded-none",
 };
 

@@ -11,6 +11,10 @@ import { getDictionary } from "@/i18n/get-dictionary";
 import { site } from "@/data/site";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { MotionProvider } from "@/components/motion/MotionProvider";
+import { SmoothScroll } from "@/components/motion/SmoothScroll";
+import { Preloader } from "@/components/motion/Preloader";
+import { Cursor } from "@/components/motion/Cursor";
 
 type Params = Promise<{ lang: string }>;
 
@@ -92,19 +96,29 @@ export default async function RootLayout({
   const dict = await getDictionary(lang);
 
   return (
-    <html lang={lang}>
+    <html lang={lang} suppressHydrationWarning>
+      <head>
+        {/* Marque la présence de JavaScript avant le premier rendu (les éléments animés restent visibles sans JS) */}
+        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
+      </head>
       <body className="flex min-h-dvh flex-col">
-        <a
-          href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-[var(--radius-sm)] focus:bg-red focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-white"
-        >
-          {dict.nav.skip}
-        </a>
-        <Navbar locale={lang} dict={dict.nav} />
-        <main id="main" className="flex-1">
-          {children}
-        </main>
-        <Footer locale={lang} dict={dict} />
+        <MotionProvider>
+          <SmoothScroll>
+            <Preloader />
+            <Cursor />
+            <a
+              href="#main"
+              className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-[var(--radius-sm)] focus:bg-red focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-white"
+            >
+              {dict.nav.skip}
+            </a>
+            <Navbar locale={lang} dict={dict.nav} />
+            <main id="main" tabIndex={-1} className="flex-1 outline-none">
+              {children}
+            </main>
+            <Footer locale={lang} dict={dict} />
+          </SmoothScroll>
+        </MotionProvider>
       </body>
     </html>
   );

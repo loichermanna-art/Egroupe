@@ -39,10 +39,10 @@ export const en: Dictionary = {
   },
 
   facts: [
-    { value: "2011", label: "founded in Abidjan" },
-    { value: "23", label: "study centres" },
-    { value: "5", label: "cities in Côte d'Ivoire" },
-    { value: "2,147", label: "new BAC graduates in 2026" },
+    { value: "2011", label: "founded in Abidjan", count: null },
+    { value: "23", label: "study centres", count: 23 },
+    { value: "5", label: "cities in Côte d'Ivoire", count: 5 },
+    { value: "2,147", label: "new BAC graduates in 2026", count: 2147 },
   ],
 
   about: {

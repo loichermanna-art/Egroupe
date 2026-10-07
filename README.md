@@ -7,7 +7,7 @@ Site vitrine d'**Excellence Group**, structure ivoirienne de formation créée e
 
 - **Next.js 16** (App Router, Turbopack) · **React 19** · **TypeScript**
 - **Tailwind CSS v4** — système graphique (couleurs, échelle typographique, motifs) dans `src/app/globals.css`
-- Aucune bibliothèque d'animation : transitions CSS courtes uniquement
+- **Motion** (`motion/react`) pour les entrées, les transitions d'état et les tracés SVG · **Lenis** pour le défilement lissé
 - Polices auto-hébergées : *Source Serif 4* (titres, citations) + *Inter* (texte, interface) via `@fontsource-variable`
 - i18n maison : routes `/fr` (défaut) et `/en`, redirection automatique via `src/proxy.ts`
 
@@ -17,8 +17,24 @@ Site vitrine d'**Excellence Group**, structure ivoirienne de formation créée e
 - Typographie à taille réaliste (H1 30–48 px, H2 24–34 px), hiérarchie claire, titres descriptifs plutôt que slogans.
 - Mise en page sur filets et grilles plutôt qu'en cartes ; en-têtes de section volontairement variés (empilé / scindé) ; un seul bloc de couleur (résultats).
 - Visuels réels uniquement : photo de l'équipe, affiches officielles des événements, carte vectorielle exacte de la Côte d'Ivoire (`src/data/map-ci.ts`).
-- Pas d'animation au défilement ni de compteurs : seulement des transitions de 150 ms sur les états (hover, actif, onglets, menu).
+- Motion design « cinématique » mais au service du contenu : voir la section dédiée ci-dessous.
 - Informations datées rendues honnêtement : badge « prochain rendez-vous » uniquement si une date future est connue (`nextDate` dans `src/data/events.ts`), sinon renvoi vers les réseaux sociaux.
+
+## Motion design
+
+Couche de mouvement ajoutée par-dessus la charte, sans changer la mise en page ni les textes (`src/components/motion/`) :
+
+- **Intro** (`Preloader`) : emblème, filet or et nom de la structure, puis rideau en deux temps (papier, bordeaux) ; ≈ 2,2 s, jouée **une fois par session** (`sessionStorage` `eg-intro-seen`), simple fondu ensuite.
+- **Défilement lissé** (`SmoothScroll`, Lenis) : ordinateur uniquement, natif sur mobile ; les ancres internes tiennent compte de la hauteur de l'en-tête (`--header-h`) ; verrouillage pendant l'intro et le menu mobile.
+- **Curseur personnalisé** (`Cursor`) : point + anneau à ressort, en mode « différence » ; uniquement si `(hover: hover) and (pointer: fine)`.
+- **Révélations à l'entrée dans l'écran** (`Reveal`, `Stagger`/`Item`, `Rule`, `RevealImage`) : montée + fondu, filets qui se tracent, images dévoilées par masque avec léger zoom ; **titres révélés ligne par ligne** derrière un masque (`SplitLines`, lignes mesurées dans le DOM réel) ; compteurs (`Counter`) ; parallaxe légère sur la photo (`Parallax`).
+- **États animés** : soulignement de la section active et des onglets (`layoutId`), fondu croisé des séries de résultats et des zones de bases, courbe de résultats et contour de la carte qui se tracent (`pathLength`), épingles qui se posent, menu mobile en cascade, en-tête qui s'efface au défilement vers le bas.
+
+Garde-fous :
+
+- `prefers-reduced-motion: reduce` → intro réduite à un fondu, pas de Lenis, pas de curseur, pas de parallaxe, éléments affichés directement.
+- **SEO / sans JavaScript** : tout le texte (titres compris) est rendu côté serveur ; les éléments préparés pour l'animation portent `data-motion` / `data-motion-tree` et une règle `html:not(.js) […]` les rend visibles si le script ne s'exécute pas (`<html class="js">` est posé par un script inline dans `<head>`).
+- **Mobile** : pas de Lenis, pas de curseur, pas de parallaxe ; uniquement des révélations courtes.
 
 ## Démarrer
 
@@ -36,6 +52,7 @@ npm run typecheck  # tsc --noEmit
 src/
   app/[lang]/        layout (fonts, metadata, nav, footer), page d'accueil, 404
   components/
+    motion/          MotionProvider (contexte intro / reduced-motion / pointeur), SmoothScroll (Lenis), Preloader, Cursor, Reveal, SplitLines, Counter, Parallax
     layout/          Navbar (barre utilitaire + navigation, section active, menu mobile), Footer
     sections/        Hero (+ repères chiffrés), About, Pillars, Results, Bases (+ BasesExplorer), Events, Learning, Testimonials, FinalCta
     ui/              Button, SectionHeader, MapCI (carte SVG), BrandIcons

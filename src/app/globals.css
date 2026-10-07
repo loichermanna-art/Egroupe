@@ -59,6 +59,36 @@
     html { scroll-behavior: auto; }
   }
 
+  /* Défilement lissé (Lenis) : il prend la main sur le défilement natif */
+  html.lenis, html.lenis body { height: auto; }
+  .lenis.lenis-smooth { scroll-behavior: auto !important; }
+  .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+  .lenis.lenis-stopped { overflow: clip; }
+
+  /* Intro et menu mobile : page figée */
+  html[data-intro], html[data-locked] { overflow: clip; }
+
+  /* Curseur personnalisé actif : on masque le curseur natif */
+  html.has-cursor, html.has-cursor * { cursor: none !important; }
+
+  /* Sans JavaScript, les éléments préparés pour l'animation restent visibles */
+  html:not(.js) [data-motion] {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+  }
+  html:not(.js) [data-motion-tree] * {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+    stroke-dasharray: none !important;
+    stroke-dashoffset: 0 !important;
+    fill-opacity: 1 !important;
+  }
+  html:not(.js) [data-preloader] {
+    display: none !important;
+  }
+
   body {
     @apply bg-paper text-ink font-sans antialiased;
     font-size: 1rem;
@@ -212,12 +242,22 @@
   animation: menu-in 160ms ease-out both;
 }
 
-/* Lien souligné « éditorial » */
+/* Lien souligné « éditorial » : filet discret, soulignement plein qui se trace au survol */
 @utility link-ul {
-  text-decoration: underline;
-  text-decoration-color: var(--color-line-2);
-  text-underline-offset: 0.2em;
-  text-decoration-thickness: 1px;
-  transition: text-decoration-color 150ms ease;
-  &:hover { text-decoration-color: currentColor; }
+  text-decoration: none;
+  background-image:
+    linear-gradient(currentColor, currentColor),
+    linear-gradient(var(--color-line-2), var(--color-line-2));
+  background-repeat: no-repeat;
+  background-position: 0 100%, 0 100%;
+  background-size: 0% 1px, 100% 1px;
+  padding-bottom: 0.08em;
+  transition: background-size 350ms var(--ease-out-soft);
+  &:hover, a:hover > &, button:hover > & { background-size: 100% 1px, 100% 1px; }
+}
+
+/* Image qui se rapproche doucement au survol (affiches) */
+@utility img-hover {
+  transition: transform 900ms var(--ease-out-soft);
+  .group:hover & { transform: scale(1.04); }
 }

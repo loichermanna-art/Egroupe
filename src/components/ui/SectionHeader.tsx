@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { SplitLines } from "@/components/motion/SplitLines";
+import { Reveal } from "@/components/motion/Reveal";
 
 type Props = {
   title: string;
@@ -24,12 +26,12 @@ export function SectionHeader({ title, lead, layout = "stack", dark = false, cla
   if (layout === "split") {
     return (
       <header className={cn("grid gap-4 lg:grid-cols-12 lg:gap-10", className)}>
-        <Tag className={cn("t-h2 lg:col-span-5", titleColor)}>{title}</Tag>
+        <SplitLines as={Tag} text={title} className={cn("t-h2 lg:col-span-5", titleColor)} />
         {(lead || children) && (
-          <div className="lg:col-span-6 lg:col-start-7">
+          <Reveal className="lg:col-span-6 lg:col-start-7" delay={0.25}>
             {lead && <p className={cn("t-lead", leadColor)}>{lead}</p>}
             {children}
-          </div>
+          </Reveal>
         )}
       </header>
     );
@@ -37,8 +39,12 @@ export function SectionHeader({ title, lead, layout = "stack", dark = false, cla
 
   return (
     <header className={cn("max-w-2xl", className)}>
-      <Tag className={cn("t-h2", titleColor)}>{title}</Tag>
-      {lead && <p className={cn("t-lead mt-4", leadColor)}>{lead}</p>}
+      <SplitLines as={Tag} text={title} className={cn("t-h2", titleColor)} />
+      {lead && (
+        <Reveal as="p" className={cn("t-lead mt-4", leadColor)} delay={0.25}>
+          {lead}
+        </Reveal>
+      )}
       {children}
     </header>
   );
