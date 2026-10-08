@@ -116,8 +116,12 @@ function belowCenter(cy: number, k: number) {
   return cy - (0.09 * MAP_H) / k;
 }
 
-/** Cadre un ensemble de points (unités carte) : centre + zoom, plafonné. */
-export function frameFor(points: { x: number; y: number }[], maxK: number): { cx: number; cy: number; k: number } {
+/**
+ * Cadre un ensemble de points (unités carte) : centre + zoom, plafonné.
+ * `fill` : part de la largeur de la scène occupée par les points (0,55 par défaut ;
+ * plus serré sur téléphone, où la scène est étroite).
+ */
+export function frameFor(points: { x: number; y: number }[], maxK: number, fill = 0.55): { cx: number; cy: number; k: number } {
   if (points.length === 0) return COUNTRY_VIEW;
   const xs = points.map((p) => p.x);
   const ys = points.map((p) => p.y);
@@ -127,7 +131,7 @@ export function frameFor(points: { x: number; y: number }[], maxK: number): { cx
   const maxY = Math.max(...ys);
   const w = Math.max(maxX - minX, 0.01);
   const h = Math.max(maxY - minY, 0.01);
-  const k = clamp(Math.min((0.55 * MAP_W) / w, (0.5 * MAP_H) / h), 1, maxK);
+  const k = clamp(Math.min((fill * MAP_W) / w, ((fill * 0.9) * MAP_H) / h), 1, maxK);
   return { cx: (minX + maxX) / 2, cy: belowCenter((minY + maxY) / 2, k), k };
 }
 
@@ -247,6 +251,21 @@ export function MapCI({
   const { fine } = useMotionContext();
   const on = show || reduced;
 
+  /* ----- largeur réelle de la scène : sur téléphone, les étiquettes des bases
+     n'apparaissent qu'à un zoom plus serré (même espacement en pixels qu'à 560 px) ----- */
+  const stage = useRef<HTMLDivElement>(null);
+  const [labelScale, setLabelScale] = useState(1);
+  useEffect(() => {
+    const el = stage.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([entry]) => {
+      const w = entry.contentRect.width;
+      if (w > 0) setLabelScale(Math.max(1, 560 / w));
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   /* ----- caméra ----- */
   const cx = useMotionValue(camera.cx);
   const cy = useMotionValue(camera.cy);
@@ -324,8 +343,12 @@ export function MapCI({
     [cx, cy, k, reduced],
   );
 
-  // Entrée : le plan s'incline et la caméra descend sur la cible initiale (Abidjan)
+  // Entrée : le plan s'incline et la caméra descend sur la cible initiale (Abidjan).
+  // Tant qu'aucun vol n'a été demandé (id 0), la cible initiale suit la prop (recadrage téléphone).
   const initialCamera = useRef(camera);
+  useEffect(() => {
+    if (camera.id === 0) initialCamera.current = camera;
+  }, [camera]);
   const [settled, setSettled] = useState(false);
   useEffect(() => {
     if (!show) return;
@@ -433,6 +456,7 @@ export function MapCI({
     <div className={className} ref={ref} data-motion-tree="">
       <div className="@container mx-auto w-full max-w-[560px]">
         <div
+          ref={stage}
           className="relative w-full touch-manipulation select-none overflow-hidden bg-cream [perspective:200cqw]"
           style={{ aspectRatio: `${MAP_W} / ${MAP_H}` }}
           onPointerDown={onPointerDown}
@@ -548,6 +572,7 @@ export function MapCI({
                 cam={cam}
                 active={b.id === activeBase}
                 inZone={b.zone === zone}
+                labelScale={labelScale}
                 reduced={reduced}
                 onSelect={() => onSelectBase(b.id)}
               />
@@ -569,7 +594,7 @@ export function MapCI({
               title={labels.zoomIn}
               disabled={atMax}
               onClick={() => zoomBy(1.8)}
-              className="flex h-9 w-9 items-center justify-center text-ink transition-colors hover:bg-paper disabled:text-ink-3/50 disabled:hover:bg-white"
+              className="flex h-9 w-9 items-center justify-center text-ink transition-colors hover:bg-paper disabled:text-ink-3/50 disabled:hover:bg-white pointer-coarse:h-11 pointer-coarse:w-11"
             >
               <Plus className="h-4 w-4" strokeWidth={1.75} aria-hidden />
             </button>
@@ -579,7 +604,7 @@ export function MapCI({
               title={labels.zoomOut}
               disabled={!zoomed}
               onClick={() => zoomBy(1 / 1.8)}
-              className="flex h-9 w-9 items-center justify-center border-t border-line text-ink transition-colors hover:bg-paper disabled:text-ink-3/50 disabled:hover:bg-white"
+              className="flex h-9 w-9 items-center justify-center border-t border-line text-ink transition-colors hover:bg-paper disabled:text-ink-3/50 disabled:hover:bg-white pointer-coarse:h-11 pointer-coarse:w-11"
             >
               <Minus className="h-4 w-4" strokeWidth={1.75} aria-hidden />
             </button>
@@ -590,9 +615,9 @@ export function MapCI({
                   aria-label={labels.resetView}
                   title={labels.resetView}
                   onClick={onReset}
-                  className="flex h-9 w-9 items-center justify-center overflow-hidden border-t border-line text-red transition-colors hover:bg-paper"
+                  className="flex h-9 w-9 items-center justify-center overflow-hidden border-t border-line text-red transition-colors hover:bg-paper pointer-coarse:h-11 pointer-coarse:w-11"
                   initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 36, opacity: 1 }}
+                  animate={{ height: fine ? 36 : 44, opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
                   transition={{ duration: 0.25, ease: EASE_OUT }}
                 >
@@ -740,6 +765,7 @@ function BaseMarker({
   cam,
   active,
   inZone,
+  labelScale,
   reduced,
   onSelect,
 }: {
@@ -747,12 +773,16 @@ function BaseMarker({
   cam: Cam;
   active: boolean;
   inZone: boolean;
+  /** 560 px / largeur de la scène : relève les seuils d'étiquetage sur petit écran. */
+  labelScale: number;
   reduced: boolean;
   onSelect: () => void;
 }) {
   // Étiquette masquée tant que le zoom ne sépare pas assez les bases voisines ;
-  // les bases hors de la zone sélectionnée ne sont nommées qu'en zoom rapproché
-  const minK = Math.max(b.labelMinK ?? 0, inZone ? 0 : 14);
+  // les bases hors de la zone sélectionnée ne sont nommées qu'en zoom rapproché.
+  // Sur petit écran, les bases serrées (seuil défini) attendent un zoom proportionnellement plus fort.
+  const narrow = labelScale > 1.3;
+  const minK = Math.max((b.labelMinK ?? 0) * labelScale, inZone ? (narrow ? 9 * labelScale : 0) : 14 * labelScale);
   const labelOpacity = useTransform(cam.k, (z) => (z >= minK ? 1 : 0));
   const height = active ? 24 : 16;
   const head = 11;

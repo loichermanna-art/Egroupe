@@ -194,19 +194,21 @@ export function RevealImage({
       </div>
     );
   }
+  // Le cadre (observé) n'est jamais découpé : les navigateurs récents ne signalent
+  // pas l'entrée à l'écran d'un élément entièrement masqué par son propre clip-path.
   return (
-    <motion.div
-      ref={ref}
-      data-motion=""
-      className={cn("relative overflow-hidden", className)}
-      style={style}
-      variants={withDelay(clipVariants, delay)}
-      initial="hidden"
-      animate={show ? "show" : "hidden"}
-    >
-      <motion.div className="absolute inset-0" variants={withDelay(zoomVariants, delay)} initial="hidden" animate={show ? "show" : "hidden"}>
-        {children}
+    <div ref={ref} className={cn("relative overflow-hidden", className)} style={style}>
+      <motion.div
+        data-motion=""
+        className="absolute inset-0"
+        variants={withDelay(clipVariants, delay)}
+        initial="hidden"
+        animate={show ? "show" : "hidden"}
+      >
+        <motion.div className="absolute inset-0" variants={withDelay(zoomVariants, delay)} initial="hidden" animate={show ? "show" : "hidden"}>
+          {children}
+        </motion.div>
       </motion.div>
-    </motion.div>
+    </div>
   );
 }

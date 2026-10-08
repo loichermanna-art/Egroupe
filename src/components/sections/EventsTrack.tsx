@@ -136,28 +136,36 @@ function TrackCard({ item, labels }: { item: TrackEvent; labels: Props["labels"]
   );
 }
 
-/* ---------- Liste verticale (mobile, animations réduites, petits écrans) ---------- */
+/* ---------- Liste verticale (mobile, animations réduites, petits écrans) ----------
+   Téléphone : titre pleine largeur, puis affiche à gauche et repères (date, lieu,
+   éditions précédentes) à droite, description en dessous.
+   À partir de md : texte à gauche, affiche à droite. */
 function ListRow({ item, labels }: { item: TrackEvent; labels: Props["labels"] }) {
   return (
-    <li className="grid gap-5 border-b border-line py-7 md:grid-cols-[1fr_10rem] md:gap-10 md:py-8 lg:grid-cols-[1fr_11rem]">
-      <Stagger className="max-w-[38rem]" gap={0.08}>
-        <Item className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
-          <p className="text-[0.875rem] text-ink-3">{item.kicker}</p>
-          {item.upcoming && <p className="inline-flex items-center bg-red px-1.5 py-0.5 text-[0.75rem] font-medium leading-tight text-white">{labels.next}</p>}
+    <li className="border-b border-line py-7 md:py-8">
+      <Stagger className="grid grid-cols-[7.5rem_minmax(0,1fr)] gap-x-4 gap-y-3 md:grid-cols-[minmax(0,1fr)_10rem] md:gap-x-10 md:gap-y-0 lg:grid-cols-[minmax(0,1fr)_11rem]" gap={0.08}>
+        <Item className="col-span-2 md:col-span-1 md:col-start-1 md:row-start-1">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+            <p className="text-[0.875rem] text-ink-3">{item.kicker}</p>
+            {item.upcoming && <p className="inline-flex items-center bg-red px-1.5 py-0.5 text-[0.75rem] font-medium leading-tight text-white">{labels.next}</p>}
+          </div>
+          <h3 className="t-h3 mt-1.5 text-ink">{item.title}</h3>
         </Item>
-        <Item as="h3" className="t-h3 mt-1.5 text-ink">
-          {item.title}
+
+        <Item as="figure" className="col-start-1 row-start-2 row-span-2 self-start md:col-start-2 md:row-start-1 md:row-span-4">
+          <RevealImage className="group w-full border border-line bg-cream" style={{ aspectRatio: `${item.poster.width} / ${item.poster.height}` }} delay={0.15}>
+            <Image src={item.poster.src} alt={`${item.title} — ${item.kicker}`} fill sizes="(min-width: 1024px) 11rem, (min-width: 768px) 10rem, 7.5rem" className="img-hover object-cover" />
+          </RevealImage>
         </Item>
-        <Item as="p" className="mt-3 leading-[1.7] text-ink-2">
-          {item.text}
-        </Item>
-        <Item as="p" className="mt-3 text-[0.9375rem] font-medium text-ink">
+
+        <Item as="p" className="col-start-2 row-start-2 self-start text-[0.9375rem] font-medium leading-snug text-ink md:col-start-1 md:row-start-3 md:mt-3">
           {item.meta}
         </Item>
-        {item.extras.length > 0 && (
-          <Item className="mt-4 flex items-center gap-3">
-            <span className="text-[0.8125rem] text-ink-3">{labels.pastEditions}</span>
-            <ul className="flex gap-1.5">
+
+        {item.extras.length > 0 ? (
+          <Item className="col-start-2 row-start-3 self-start md:col-start-1 md:row-start-4 md:mt-4 md:flex md:items-center md:gap-3">
+            <span className="block text-[0.8125rem] text-ink-3">{labels.pastEditions}</span>
+            <ul className="mt-1.5 flex gap-1.5 md:mt-0">
               {item.extras.map((ex) => (
                 <li key={ex.src} className="relative h-9 w-9 overflow-hidden border border-line bg-cream">
                   <Image src={ex.src} alt="" fill sizes="36px" className="object-cover" />
@@ -165,13 +173,14 @@ function ListRow({ item, labels }: { item: TrackEvent; labels: Props["labels"] }
               ))}
             </ul>
           </Item>
+        ) : (
+          <span className="col-start-2 row-start-3 md:hidden" aria-hidden />
         )}
+
+        <Item as="p" className="col-span-2 max-w-[38rem] leading-[1.7] text-ink-2 md:col-span-1 md:col-start-1 md:row-start-2 md:mt-3">
+          {item.text}
+        </Item>
       </Stagger>
-      <figure className="md:justify-self-end">
-        <RevealImage className="group w-[9.5rem] border border-line bg-cream md:w-full" style={{ aspectRatio: `${item.poster.width} / ${item.poster.height}` }} delay={0.15}>
-          <Image src={item.poster.src} alt={`${item.title} — ${item.kicker}`} fill sizes="(min-width: 768px) 11rem, 9.5rem" className="img-hover object-cover" />
-        </RevealImage>
-      </figure>
     </li>
   );
 }

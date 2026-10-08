@@ -9,6 +9,7 @@ import "../globals.css";
 import { isLocale, locales, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { site } from "@/data/site";
+import { getSiteUrl } from "@/lib/site-url";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { MotionProvider } from "@/components/motion/MotionProvider";
@@ -29,7 +30,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const { lang } = await params;
   const locale: Locale = isLocale(lang) ? lang : "fr";
   const dict = await getDictionary(locale);
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://excellencegroup.ci";
+  const siteUrl = getSiteUrl();
 
   return {
     metadataBase: new URL(siteUrl),
@@ -83,6 +84,8 @@ export const viewport: Viewport = {
   themeColor: "#8f0219",
   width: "device-width",
   initialScale: 1,
+  // Écrans à encoche : le fond s'étend sous les zones de sécurité, les marges les respectent (env(safe-area-inset-*))
+  viewportFit: "cover",
 };
 
 export default async function RootLayout({

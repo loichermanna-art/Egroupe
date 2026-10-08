@@ -48,10 +48,11 @@
     color-scheme: light;
     --header-h: 72px;
     /* Marge du cahier : filet rouge fixe à gauche, le contenu commence à sa droite */
-    --margin-x: 0.75rem;
+    /* Marge du cahier : décalée des zones de sécurité des écrans à encoche */
+    --margin-x: calc(0.75rem + env(safe-area-inset-left, 0px));
     --margin-gap: 1rem;
     @media (width >= 48rem) {
-      --margin-x: 2.75rem;
+      --margin-x: calc(2.75rem + env(safe-area-inset-left, 0px));
       --margin-gap: 2.75rem;
     }
   }
@@ -152,12 +153,12 @@
   width: 100%;
   max-width: calc(1120px + var(--margin-x) + var(--margin-gap) + 2.5rem);
   margin-inline: auto;
-  padding-inline: calc(var(--margin-x) + var(--margin-gap)) 1.25rem;
-  @media (width >= 48rem) { padding-inline: calc(var(--margin-x) + var(--margin-gap)) 2.5rem; }
+  padding-inline: calc(var(--margin-x) + var(--margin-gap)) max(1rem, env(safe-area-inset-right, 0px));
+  @media (width >= 48rem) { padding-inline: calc(var(--margin-x) + var(--margin-gap)) max(2.5rem, env(safe-area-inset-right, 0px)); }
 }
 
 @utility section {
-  padding-block: 3.5rem;
+  padding-block: 3.25rem;
   @media (width >= 48rem) { padding-block: 5.5rem; }
 }
 

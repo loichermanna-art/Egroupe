@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 import { COUNTRY_VIEW, MapCI, focusOn, frameFor, type CameraTarget, type MapBaseView, type MapLabels, type MapPinView } from "@/components/ui/MapCI";
 import { Reveal, Rule } from "@/components/motion/Reveal";
-import { EASE_OUT, useMotionContext } from "@/components/motion/MotionProvider";
+import { EASE_OUT, useMediaQuery, useMotionContext } from "@/components/motion/MotionProvider";
 import { useSmoothScroll } from "@/components/motion/SmoothScroll";
 
 export type ZoneView = { key: ZoneKey; label: string; count: string; bases: MapBaseView[] };
@@ -44,20 +44,32 @@ const cityZone: Record<string, ZoneKey> = {
 
 const point = (b: MapBaseView) => projectCI(b.lat, b.lng);
 
+/** Part de la largeur de la scène occupée par les bases cadrées : plus serré sur téléphone. */
+const FILL_WIDE = 0.55;
+const FILL_NARROW = 0.8;
+
 /** Cadrage d'ouverture : Abidjan (bases Sud + Nord), avant toute interaction. */
-function abidjanFrame(zones: ZoneView[]) {
+function abidjanFrame(zones: ZoneView[], fill = FILL_WIDE) {
   const pts = zones.filter((z) => z.key !== "interior").flatMap((z) => z.bases.map(point));
-  return pts.length ? frameFor(pts, MAP_MAX_ZOOM) : COUNTRY_VIEW;
+  return pts.length ? frameFor(pts, MAP_MAX_ZOOM, fill) : COUNTRY_VIEW;
 }
 
 export function BasesExplorer({ zones, pins, cities, areaLabels, labels }: Props) {
   const [zone, setZone] = useState<ZoneKey>("south");
   const [activeBase, setActiveBase] = useState<string | null>(null);
-  const [camera, setCamera] = useState<CameraTarget>(() => ({ ...abidjanFrame(zones), id: 0 }));
+  const [camera, setCamera] = useState<CameraTarget>({ ...COUNTRY_VIEW, id: 0 });
   const tabsId = useId();
   const mapWrap = useRef<HTMLDivElement>(null);
   const { reduced } = useMotionContext();
   const { scrollTo } = useSmoothScroll();
+
+  // Téléphone : scène étroite → cadrages plus serrés, bases vues de plus près
+  const narrow = useMediaQuery("(max-width: 40rem)");
+  const fill = narrow ? FILL_NARROW : FILL_WIDE;
+  const closeUp = (k: number) => Math.min(MAP_MAX_ZOOM, narrow ? k * 1.25 : k);
+  // Cadrage d'ouverture (tant qu'aucun vol n'a été demandé) : suit la largeur d'écran
+  const opening = useMemo<CameraTarget>(() => ({ ...abidjanFrame(zones, fill), id: 0 }), [zones, fill]);
+  const cameraTarget = camera.id === 0 ? opening : camera;
 
   const current = zones.find((z) => z.key === zone) ?? zones[0];
   const allBases = useMemo(() => zones.flatMap((z) => z.bases), [zones]);
@@ -67,7 +79,7 @@ export function BasesExplorer({ zones, pins, cities, areaLabels, labels }: Props
     setCamera((prev) => ({ ...t, id: prev.id + 1 }));
   }, []);
 
-  /** Sur mobile, la carte est sous la liste : on l'amène dans l'écran avant le vol. */
+  /** Sur mobile, la carte est au-dessus de la liste : on la ramène dans l'écran avant le vol si elle en est sortie. */
   const bringMapIntoView = useCallback(() => {
     const el = mapWrap.current;
     if (!el) return;
@@ -81,7 +93,7 @@ export function BasesExplorer({ zones, pins, cities, areaLabels, labels }: Props
     if (!target) return;
     setZone(key);
     setActiveBase(null);
-    fly(frameFor(target.bases.map(point), MAP_MAX_ZOOM));
+    fly(frameFor(target.bases.map(point), MAP_MAX_ZOOM, fill));
   };
 
   const selectBase = (id: string, fromList = false) => {
@@ -90,13 +102,13 @@ export function BasesExplorer({ zones, pins, cities, areaLabels, labels }: Props
     if (activeBase === id) {
       // Second clic : on revient à la vue de la zone
       setActiveBase(null);
-      fly(frameFor((zones.find((z) => z.key === base.zone)?.bases ?? []).map(point), MAP_MAX_ZOOM));
+      fly(frameFor((zones.find((z) => z.key === base.zone)?.bases ?? []).map(point), MAP_MAX_ZOOM, fill));
       return;
     }
     setZone(base.zone);
     setActiveBase(id);
     if (fromList) bringMapIntoView();
-    fly(focusOn(point(base), baseZoom[base.zone]));
+    fly(focusOn(point(base), closeUp(baseZoom[base.zone])));
   };
 
   const selectCity = (key: string) => {
@@ -108,7 +120,7 @@ export function BasesExplorer({ zones, pins, cities, areaLabels, labels }: Props
         : allBases.filter((b) => b.zone === "interior" && pin && Math.hypot(b.lat - pin.lat, b.lng - pin.lng) < 0.2);
     setZone(key === "abidjan" ? (zone === "north" ? "north" : "south") : z);
     setActiveBase(null);
-    fly(frameFor(inCity.map(point), key === "abidjan" ? MAP_MAX_ZOOM : baseZoom.interior));
+    fly(frameFor(inCity.map(point), key === "abidjan" ? MAP_MAX_ZOOM : closeUp(baseZoom.interior), fill));
   };
 
   const reset = () => {
@@ -117,11 +129,11 @@ export function BasesExplorer({ zones, pins, cities, areaLabels, labels }: Props
   };
 
   return (
-    <div className="mt-10 grid gap-12 lg:mt-12 lg:grid-cols-12 lg:gap-10">
-      {/* ---- Liste ---- */}
-      <div className="lg:col-span-6">
+    <div className="mt-8 grid gap-9 md:mt-10 lg:mt-12 lg:grid-cols-12 lg:gap-10">
+      {/* ---- Liste (sous la carte sur téléphone, à sa gauche à partir de lg) ---- */}
+      <div className="min-w-0 lg:col-span-6">
         <Reveal kind="fade" delay={0.2}>
-          <div role="tablist" aria-label={labels.legendBases} className="flex flex-wrap gap-x-6 gap-y-2">
+          <div role="tablist" aria-label={labels.legendBases} className="flex flex-wrap gap-x-6 gap-y-0">
             {zones.map((z) => {
               const selected = z.key === zone;
               return (
@@ -134,7 +146,7 @@ export function BasesExplorer({ zones, pins, cities, areaLabels, labels }: Props
                   aria-controls={`${tabsId}-panel-${z.key}`}
                   onClick={() => selectZone(z.key)}
                   className={cn(
-                    "relative inline-flex items-baseline gap-2 pb-3 text-[0.9375rem] transition-colors duration-300",
+                    "relative inline-flex min-h-11 items-baseline gap-2 pb-3 pt-2 text-[0.9375rem] transition-colors duration-300",
                     selected ? "font-medium text-ink" : "text-ink-2 hover:text-ink",
                   )}
                 >
@@ -228,8 +240,8 @@ export function BasesExplorer({ zones, pins, cities, areaLabels, labels }: Props
         </Reveal>
       </div>
 
-      {/* ---- Carte ---- */}
-      <div ref={mapWrap} className="lg:col-span-6 lg:self-start lg:sticky lg:top-[calc(var(--header-h)+1.5rem)]">
+      {/* ---- Carte : en premier sur téléphone (le vol vers la base reste visible), épinglée à droite sur grand écran ---- */}
+      <div ref={mapWrap} className="order-first min-w-0 scroll-mt-[calc(var(--header-h)+0.5rem)] lg:order-none lg:col-span-6 lg:self-start lg:sticky lg:top-[calc(var(--header-h)+1.5rem)]">
         <MapCI
           pins={pins}
           cities={cities}
@@ -238,7 +250,7 @@ export function BasesExplorer({ zones, pins, cities, areaLabels, labels }: Props
           zone={zone}
           highlighted={zonePins[zone]}
           activeBase={activeBase}
-          camera={camera}
+          camera={cameraTarget}
           onSelectBase={(id) => selectBase(id)}
           onSelectCity={selectCity}
           onReset={reset}

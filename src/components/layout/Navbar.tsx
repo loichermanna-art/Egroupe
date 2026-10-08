@@ -32,6 +32,7 @@ export function Navbar({ locale, dict }: Props) {
   const lastY = useRef(0);
 
   const home = `/${locale}`;
+  const otherLocale: Locale = locale === "fr" ? "en" : "fr";
   const links: { id: SectionId; label: string }[] = [
     { id: "about", label: dict.about },
     { id: "programs", label: dict.programs },
@@ -87,15 +88,15 @@ export function Navbar({ locale, dict }: Props) {
     <>
       {/* Barre utilitaire (à partir de md) */}
       <div className="hidden bg-red-dark text-white md:block">
-        <div className="wrap flex h-9 items-center justify-between text-[0.8125rem]">
+        <div className="wrap flex h-10 items-center justify-between text-[0.8125rem]">
           <div className="flex items-center gap-6">
-            <a href={`tel:+${site.phonePrimaryE164}`} className="inline-flex items-center gap-2 transition-colors hover:text-gold-light">
+            <a href={`tel:+${site.phonePrimaryE164}`} className="inline-flex h-10 items-center gap-2 transition-colors hover:text-gold-light">
               <Phone className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden />
               <span>
                 {dict.phoneLabel} · {site.phonePrimary}
               </span>
             </a>
-            <a href={site.whatsappUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 transition-colors hover:text-gold-light">
+            <a href={site.whatsappUrl} target="_blank" rel="noopener noreferrer" className="inline-flex h-10 items-center gap-2 transition-colors hover:text-gold-light">
               <WhatsAppIcon className="h-3.5 w-3.5" />
               {dict.whatsapp}
             </a>
@@ -115,10 +116,10 @@ export function Navbar({ locale, dict }: Props) {
         animate={{ y: hidden ? "-100%" : 0, opacity: introDone || reduced ? 1 : 0 }}
         transition={{ y: { duration: 0.45, ease: EASE_OUT }, opacity: { duration: 0.6 } }}
       >
-        <div className="wrap flex h-[var(--header-h)] items-center justify-between gap-6">
-          <Link href={home} className="flex shrink-0 items-center gap-3" aria-label={`${site.name} — ${dict.home}`}>
-            <Image src="/images/brand/icon-512.png" alt="" width={40} height={38} priority className="h-10 w-auto" />
-            <span className="font-serif text-[1.1875rem] font-semibold leading-none tracking-tight text-ink">{site.name}</span>
+        <div className="wrap flex h-[var(--header-h)] items-center justify-between gap-3 md:gap-6">
+          <Link href={home} className="flex min-h-11 shrink-0 items-center gap-2.5 sm:gap-3" aria-label={`${site.name} — ${dict.home}`}>
+            <Image src="/images/brand/icon-512.png" alt="" width={40} height={38} priority className="h-9 w-auto sm:h-10" />
+            <span className="font-serif text-[1.0625rem] font-semibold leading-none tracking-tight text-ink sm:text-[1.1875rem]">{site.name}</span>
           </Link>
 
           <nav className="hidden lg:block" aria-label={dict.menu}>
@@ -149,21 +150,27 @@ export function Navbar({ locale, dict }: Props) {
           </nav>
 
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* Mobile : langue et téléphone visibles sans ouvrir le menu */}
-            <div className="md:hidden">
-              <LangSwitch locale={locale} currentPath={currentPath} label={dict.langLabel} dark={false} />
-            </div>
+            {/* Mobile : l'autre langue et le téléphone restent accessibles sans ouvrir le menu */}
+            <Link
+              href={switchLocalePath(currentPath, otherLocale)}
+              hrefLang={otherLocale}
+              lang={otherLocale}
+              aria-label={`${dict.langLabel} : ${otherLocale.toUpperCase()}`}
+              className="inline-flex h-11 min-w-11 items-center justify-center border border-line px-2 text-[0.8125rem] font-medium uppercase text-ink transition-colors hover:bg-cream md:hidden"
+            >
+              {otherLocale}
+            </Link>
             <a
               href={`tel:+${site.phonePrimaryE164}`}
               aria-label={`${dict.phoneLabel} · ${site.phonePrimary}`}
-              className="inline-flex h-10 w-10 items-center justify-center border border-line text-ink transition-colors hover:bg-cream md:hidden"
+              className="hidden h-11 w-11 items-center justify-center border border-line text-ink transition-colors hover:bg-cream min-[390px]:inline-flex md:hidden"
             >
-              <Phone className="h-4 w-4" strokeWidth={1.75} aria-hidden />
+              <Phone className="h-[1.125rem] w-[1.125rem]" strokeWidth={1.75} aria-hidden />
             </a>
 
             <Link
               href={`${home}#contact`}
-              className="relative isolate hidden h-10 items-center overflow-hidden bg-red px-4 text-[0.9375rem] font-medium text-white shadow-[inset_0_-1px_0_rgba(0,0,0,0.18)] before:absolute before:inset-0 before:-z-10 before:origin-bottom before:scale-y-0 before:bg-red-deep before:transition-transform before:duration-[420ms] before:ease-[cubic-bezier(0.22,1,0.36,1)] hover:before:scale-y-100 md:inline-flex"
+              className="relative isolate hidden h-11 items-center overflow-hidden bg-red px-4 text-[0.9375rem] font-medium text-white shadow-[inset_0_-1px_0_rgba(0,0,0,0.18)] before:absolute before:inset-0 before:-z-10 before:origin-bottom before:scale-y-0 before:bg-red-deep before:transition-transform before:duration-[420ms] before:ease-[cubic-bezier(0.22,1,0.36,1)] hover:before:scale-y-100 md:inline-flex"
             >
               {dict.cta}
             </Link>
@@ -173,7 +180,7 @@ export function Navbar({ locale, dict }: Props) {
               aria-expanded={open}
               aria-controls="mobile-menu"
               aria-label={open ? dict.close : dict.menu}
-              className="inline-flex h-10 w-10 items-center justify-center border border-line text-ink transition-colors hover:bg-cream lg:hidden"
+              className="inline-flex h-11 w-11 items-center justify-center border border-line text-ink transition-colors hover:bg-cream lg:hidden"
             >
               {open ? <X className="h-5 w-5" strokeWidth={1.75} /> : <Menu className="h-5 w-5" strokeWidth={1.75} />}
             </button>
@@ -185,7 +192,7 @@ export function Navbar({ locale, dict }: Props) {
           {open && (
             <motion.div
               id="mobile-menu"
-              className="absolute inset-x-0 top-full max-h-[calc(100dvh-var(--header-h))] overflow-y-auto border-b border-line bg-white lg:hidden"
+              className="absolute inset-x-0 top-full max-h-[calc(100dvh-var(--header-h))] overflow-y-auto overscroll-contain border-b border-line bg-white pb-[env(safe-area-inset-bottom)] lg:hidden"
               data-lenis-prevent
               initial={reduced ? false : { opacity: 0, y: -8 }}
               animate={{ opacity: 1, y: 0 }}
@@ -206,7 +213,7 @@ export function Navbar({ locale, dict }: Props) {
                         onClick={() => setOpen(false)}
                         aria-current={active === l.id ? "true" : undefined}
                         className={cn(
-                          "flex items-center justify-between py-3.5 text-[1.0625rem] text-ink",
+                          "flex min-h-12 items-center justify-between py-3 text-[1.0625rem] text-ink",
                           active === l.id && "font-medium text-red",
                         )}
                       >
@@ -228,10 +235,21 @@ export function Navbar({ locale, dict }: Props) {
                   >
                     {dict.cta}
                   </Link>
-                  <a href={site.whatsappUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-[0.9375rem] text-ink-2">
-                    <WhatsAppIcon className="h-4 w-4" />
-                    {dict.whatsapp} · {site.phonePrimary}
-                  </a>
+                  <div className="grid grid-cols-2 gap-3">
+                    <a href={site.whatsappUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center justify-center gap-2 border border-line px-3 text-[0.9375rem] text-ink transition-colors hover:bg-cream">
+                      <WhatsAppIcon className="h-4 w-4 shrink-0" />
+                      {dict.whatsapp}
+                    </a>
+                    <a href={`tel:+${site.phonePrimaryE164}`} className="inline-flex min-h-11 items-center justify-center gap-2 border border-line px-3 text-[0.9375rem] text-ink transition-colors hover:bg-cream">
+                      <Phone className="h-4 w-4 shrink-0" strokeWidth={1.75} aria-hidden />
+                      {dict.phoneLabel}
+                    </a>
+                  </div>
+                  <p className="text-center text-[0.875rem] text-ink-3">{site.phonePrimary}</p>
+                  <div className="flex items-center justify-between border-t border-line pt-3">
+                    <span className="text-[0.8125rem] text-ink-3">{dict.langLabel}</span>
+                    <LangSwitch locale={locale} currentPath={currentPath} label={dict.langLabel} dark={false} />
+                  </div>
                 </motion.div>
               </nav>
             </motion.div>
@@ -264,7 +282,7 @@ function LangSwitch({
             lang={l}
             aria-current={locale === l ? "true" : undefined}
             className={cn(
-              "px-1 py-2 transition-colors",
+              "inline-flex min-h-10 items-center px-1.5 transition-colors",
               dark
                 ? locale === l
                   ? "text-white underline decoration-gold-light underline-offset-4"

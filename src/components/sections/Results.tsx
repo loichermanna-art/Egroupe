@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { ChevronDown } from "lucide-react";
 
@@ -55,7 +55,7 @@ export function Results({ locale, dict }: Props) {
                 <Reveal as="p" kind="fade" className="t-label text-gold-light" delay={0.1}>
                   {dict.sessionLabel}
                 </Reveal>
-                <Stagger as="dl" className="mt-4 grid gap-8 sm:grid-cols-3 sm:gap-6" gap={0.12} delay={0.2}>
+                <Stagger as="dl" className="mt-4 grid gap-7 sm:grid-cols-3 sm:gap-6" gap={0.12} delay={0.2}>
                   {figures.map((f, i) => (
                     <Item key={f.key} className={cn(i > 0 && "sm:border-l sm:border-white/20 sm:pl-6")}>
                       <dd className="t-stat">
@@ -109,7 +109,7 @@ export function Results({ locale, dict }: Props) {
                       aria-selected={series === s}
                       onClick={() => setSeries(s)}
                       className={cn(
-                        "relative pb-3 transition-colors duration-300",
+                        "relative min-h-11 pb-3 pt-2 transition-colors duration-300",
                         series === s ? "font-medium text-white" : "text-white/60 hover:text-white",
                       )}
                     >
@@ -127,21 +127,19 @@ export function Results({ locale, dict }: Props) {
               </Reveal>
             </div>
             <Rule className="bg-white/20" />
-            {/* Sur petit écran, le graphique défile horizontalement plutôt que de devenir illisible */}
-            <div className="mt-6 overflow-x-auto" role="tabpanel" aria-labelledby={`${tabsId}-${series}`} data-lenis-prevent>
-              <div className="min-w-[560px]">
-                <AnimatePresence mode="wait" initial={false}>
-                  <motion.div
-                    key={series}
-                    initial={reduced ? false : { opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8, transition: { duration: 0.2 } }}
-                    transition={{ duration: 0.4, ease: EASE_OUT }}
-                  >
-                    <RateChart data={series === "bac" ? bacRates : bepcRates} locale={locale} />
-                  </motion.div>
-                </AnimatePresence>
-              </div>
+            {/* Le graphique se redessine à la largeur disponible : compact sur téléphone, sans défilement horizontal */}
+            <div className="mt-6" role="tabpanel" aria-labelledby={`${tabsId}-${series}`}>
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={series}
+                  initial={reduced ? false : { opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8, transition: { duration: 0.2 } }}
+                  transition={{ duration: 0.4, ease: EASE_OUT }}
+                >
+                  <RateChart data={series === "bac" ? bacRates : bepcRates} locale={locale} />
+                </motion.div>
+              </AnimatePresence>
             </div>
             <Reveal kind="fade" delay={0.6} className="mt-4 flex flex-col gap-1 text-[0.8125rem] text-white/60 sm:flex-row sm:justify-between">
               <p>{dict.chartNote}</p>
@@ -154,18 +152,23 @@ export function Results({ locale, dict }: Props) {
       {/* ---- Lauréats : fond papier ---- */}
       <div className="section bg-paper">
         <div className="wrap grid gap-8 lg:grid-cols-12 lg:gap-10">
-          <div className="lg:col-span-4">
+          <div className="min-w-0 lg:col-span-4">
             <SplitLines as="h3" text={dict.laureatesTitle} className="t-h2 text-ink" />
             <Reveal as="p" className="t-lead mt-4 max-w-sm" delay={0.25}>
               {dict.laureatesLead}
             </Reveal>
           </div>
 
-          <div className="lg:col-span-8">
-            <div className="overflow-x-auto" data-lenis-prevent>
-              <table className="w-full min-w-[480px] text-left text-[0.9375rem]">
+          <div className="min-w-0 lg:col-span-8">
+            {/*
+              Sur téléphone, le tableau devient une liste : chaque lauréat sur deux lignes
+              (rang, nom, points / série, mention) — toutes les données restent présentes.
+              À partir de sm, tableau classique (défilement horizontal seulement si nécessaire).
+            */}
+            <div className="sm:overflow-x-auto" data-lenis-prevent>
+              <table className="block w-full border-t-2 border-ink text-left text-[0.9375rem] sm:table sm:min-w-[480px] sm:border-t-0">
                 <caption className="sr-only">{dict.laureatesTitle}</caption>
-                <thead>
+                <thead className="hidden sm:table-header-group">
                   <tr className="t-label border-b-2 border-ink">
                     <th scope="col" className="w-14 py-2.5 pr-3 font-semibold">{dict.rank}</th>
                     <th scope="col" className="py-2.5 pr-3 font-semibold">{dict.name}</th>
@@ -177,7 +180,7 @@ export function Results({ locale, dict }: Props) {
                 <LaureateRows rows={shown} locale={locale} dict={dict} />
               </table>
             </div>
-            <Reveal kind="fade" delay={0.5} className="mt-4 flex flex-wrap items-center justify-between gap-4">
+            <Reveal kind="fade" delay={0.5} className="mt-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 sm:mt-4">
               <p className="t-caption" aria-live="polite">
                 {dict.shownOf.replace("{shown}", String(shown.length)).replace("{total}", String(laureates2026.length))}
               </p>
@@ -185,7 +188,7 @@ export function Results({ locale, dict }: Props) {
                 type="button"
                 onClick={() => setExpanded((e) => !e)}
                 aria-expanded={expanded}
-                className="inline-flex items-center gap-2 text-[0.9375rem] font-medium text-red hover:text-red-dark"
+                className="-mr-2 inline-flex min-h-11 items-center gap-2 px-2 text-[0.9375rem] font-medium text-red hover:text-red-dark"
               >
                 <span className="link-ul">{expanded ? dict.showLess : dict.showAll}</span>
                 <ChevronDown className={cn("h-4 w-4 transition-transform duration-300", expanded && "rotate-180")} aria-hidden />
@@ -212,7 +215,7 @@ function LaureateRows({
 }) {
   const { ref, show, reduced } = useReveal<HTMLTableSectionElement>();
   return (
-    <tbody ref={ref}>
+    <tbody ref={ref} className="block sm:table-row-group">
       <AnimatePresence initial={false}>
         {rows.map((l, i) => {
           const top = l.rank <= 3;
@@ -225,10 +228,13 @@ function LaureateRows({
               animate={firstBatch && !show ? { opacity: 0, y: 10 } : { opacity: 1, y: 0 }}
               exit={{ opacity: 0, transition: { duration: 0.12 } }}
               transition={{ duration: 0.55, ease: EASE_OUT, delay: firstBatch ? 0.15 + i * 0.05 : (i - PREVIEW_ROWS) * 0.025 }}
-              className={cn("border-b border-line transition-colors hover:bg-cream/70", top && "bg-gold-pale")}
+              className={cn(
+                "grid grid-cols-[2rem_minmax(0,1fr)_auto] items-baseline gap-x-2 border-b border-line py-2.5 transition-colors hover:bg-cream/70 sm:table-row sm:py-0",
+                top && "bg-gold-pale",
+              )}
             >
-              <td className="py-2.5 pr-3 tabular-nums text-ink-2">{l.rank}</td>
-              <td className="py-2.5 pr-3 font-medium text-ink">
+              <td className="row-span-2 tabular-nums text-ink-2 sm:table-cell sm:py-2.5 sm:pr-3">{l.rank}</td>
+              <td className="font-medium text-ink sm:table-cell sm:py-2.5 sm:pr-3">
                 {l.rank === 1 ? (
                   <PenUnderline color="gold" delay={0.9}>
                     {l.name}
@@ -237,12 +243,15 @@ function LaureateRows({
                   l.name
                 )}
               </td>
-              <td className="py-2.5 pr-3 text-ink-2">{l.series}</td>
-              <td className="py-2.5 pr-3 text-right tabular-nums text-ink">
+              <td className="col-start-2 row-start-2 text-[0.8125rem] text-ink-3 sm:table-cell sm:py-2.5 sm:pr-3 sm:text-[0.9375rem] sm:text-ink-2">
+                <span className="sm:hidden">{dict.series} </span>
+                {l.series}
+              </td>
+              <td className="col-start-3 row-start-1 text-right tabular-nums text-ink sm:table-cell sm:py-2.5 sm:pr-3">
                 {formatNumber(l.points, locale)}
                 <span className="ml-1 text-[0.8125rem] text-ink-3">{dict.pts}</span>
               </td>
-              <td className="py-2.5 pl-3 text-right">
+              <td className="col-start-3 row-start-2 text-right sm:table-cell sm:py-2.5 sm:pl-3">
                 <span
                   className={cn(
                     "inline-block border px-1.5 py-0.5 text-[0.75rem] font-medium leading-tight",
@@ -267,13 +276,29 @@ function RateChart({ data, locale }: { data: RatePoint[]; locale: Locale }) {
   const [active, setActive] = useState<number>(data.length - 1);
   const { ref, show, reduced } = useReveal<HTMLDivElement>();
 
-  const W = 800;
-  const H = 280;
-  const padX = 36;
-  const padTop = 40;
-  const padBottom = 36;
+  // Largeur réelle du conteneur : le repère SVG est dessiné en pixels CSS (textes lisibles à toute taille)
+  const [width, setWidth] = useState(800);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([entry]) => {
+      const w = Math.round(entry.contentRect.width);
+      if (w > 0) setWidth(w);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [ref]);
+
+  const compact = width < 560;
+  const W = width;
+  const H = compact ? 220 : 280;
+  const padX = compact ? 28 : 36;
+  const padTop = compact ? 44 : 40;
+  const padBottom = compact ? 30 : 36;
   const min = 40;
   const max = 100;
+  // Sur téléphone, une année sur deux en abscisse (toutes les sessions restent pointées)
+  const labelEvery = compact && W < 420 ? 2 : 1;
 
   const pts = useMemo(
     () =>
@@ -282,19 +307,20 @@ function RateChart({ data, locale }: { data: RatePoint[]; locale: Locale }) {
         y: padTop + (1 - (d.rate - min) / (max - min)) * (H - padTop - padBottom),
         d,
       })),
-    [data],
+    [data, W, H, padX, padTop, padBottom],
   );
 
   const path = useMemo(() => pts.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`).join(" "), [pts]);
   const area = `${path} L ${pts[pts.length - 1].x} ${H - padBottom} L ${pts[0].x} ${H - padBottom} Z`;
   const a = pts[active];
-  const tipW = 150;
+  const tipW = compact ? 136 : 150;
   const tipX = Math.min(Math.max(a.x - tipW / 2, 0), W - tipW);
   const drawDuration = 1.6;
+  const hit = Math.max(16, Math.min(36, (W - padX * 2) / (data.length - 1)));
 
   return (
-    <div ref={ref} data-motion-tree="">
-      <svg viewBox={`0 0 ${W} ${H}`} className="h-auto w-full" role="img" aria-label={`${a.d.session} : ${formatPercent(a.d.rate, locale)}`}>
+    <div ref={ref} data-motion-tree="" className="w-full">
+      <svg viewBox={`0 0 ${W} ${H}`} className="block h-auto w-full touch-manipulation" role="img" aria-label={`${a.d.session} : ${formatPercent(a.d.rate, locale)}`}>
         {/* Grille */}
         {[50, 60, 70, 80, 90, 100].map((v, i) => {
           const y = padTop + (1 - (v - min) / (max - min)) * (H - padTop - padBottom);
@@ -338,13 +364,14 @@ function RateChart({ data, locale }: { data: RatePoint[]; locale: Locale }) {
             <g
               key={p.d.session}
               onMouseEnter={() => setActive(i)}
+              onPointerDown={() => setActive(i)}
               onFocus={() => setActive(i)}
               tabIndex={0}
               role="button"
               aria-label={`${p.d.session} : ${formatPercent(p.d.rate, locale)}`}
               className="cursor-pointer outline-none"
             >
-              <rect x={p.x - 18} y={0} width={36} height={H} fill="transparent" />
+              <rect x={p.x - hit / 2} y={0} width={hit} height={H} fill="transparent" />
               <motion.circle
                 cx={p.x}
                 cy={p.y}
@@ -357,19 +384,21 @@ function RateChart({ data, locale }: { data: RatePoint[]; locale: Locale }) {
                 transition={{ duration: 0.35, delay, ease: EASE_OUT }}
                 style={{ transformOrigin: `${p.x}px ${p.y}px` }}
               />
-              <motion.text
-                x={p.x}
-                y={H - 12}
-                textAnchor="middle"
-                fill={active === i ? "#ffffff" : "rgba(255,255,255,0.55)"}
-                fontSize="11"
-                fontWeight={active === i ? 600 : 400}
-                initial={reduced ? false : { opacity: 0 }}
-                animate={{ opacity: show || reduced ? 1 : 0 }}
-                transition={{ duration: 0.4, delay }}
-              >
-                {p.d.short}
-              </motion.text>
+              {(i % labelEvery === 0 || active === i || i === pts.length - 1) && (
+                <motion.text
+                  x={p.x}
+                  y={H - 12}
+                  textAnchor="middle"
+                  fill={active === i ? "#ffffff" : "rgba(255,255,255,0.55)"}
+                  fontSize="11"
+                  fontWeight={active === i ? 600 : 400}
+                  initial={reduced ? false : { opacity: 0 }}
+                  animate={{ opacity: show || reduced ? 1 : 0 }}
+                  transition={{ duration: 0.4, delay }}
+                >
+                  {p.d.short}
+                </motion.text>
+              )}
             </g>
           );
         })}

@@ -79,4 +79,31 @@ docs/                brief complet + dossier de présentation source
 
 ## Variables d'environnement
 
-- `NEXT_PUBLIC_SITE_URL` (optionnel) — URL publique utilisée pour les balises canonical / Open Graph (défaut : `https://excellencegroup.ci`).
+- `NEXT_PUBLIC_SITE_URL` (optionnel) — URL publique utilisée pour les balises canonical / Open Graph, le `sitemap.xml` et le `robots.txt`.
+  Si elle est absente, le site utilise le domaine de production Vercel (`VERCEL_PROJECT_PRODUCTION_URL`, injecté automatiquement), puis `https://excellencegroup.ci` par défaut.
+  Modèle : `.env.example` (copier en `.env.local` si besoin ; les fichiers `.env*` sont ignorés par Git).
+
+## Responsive & mobile
+
+- Approche *mobile-first* : chaque composant possède une présentation téléphone (320 → 430 px), tablette (768 px) et bureau (≥ 1024 px) sans perte d'information
+  (tableau des lauréats → liste à deux lignes, événements → liste illustrée, carte des bases placée au-dessus de la liste et cadrée plus serré sur Abidjan).
+- Zones tactiles ≥ 44 px pour la navigation, les onglets, les boutons de la carte et les liens du pied de page ; marges latérales et menu mobile tiennent compte des
+  encoches (`env(safe-area-inset-*)`, `viewport-fit=cover`).
+- Les effets réservés au bureau (défilement lissé, curseur, sections épinglées, parallaxe) sont désactivés sur écran tactile ou en `prefers-reduced-motion` ;
+  l'effet de caméra de la carte (zoom + déplacement) reste actif partout.
+
+## Déployer sur Vercel
+
+Le projet est un site Next.js standard : aucune configuration particulière (ni `vercel.json`, ni variable obligatoire) n'est nécessaire.
+
+1. Sur [vercel.com](https://vercel.com) → **Add New… → Project**, choisir le dépôt GitHub `loichermanna-art/Egroupe`.
+2. Vercel détecte **Next.js** automatiquement : *Framework Preset* `Next.js`, *Build Command* `next build`, *Output* par défaut, *Install Command* `npm install`.
+   Laisser le *Root Directory* vide (le `package.json` est à la racine). Node.js 20 ou supérieur (`engines` dans `package.json`).
+3. (Optionnel) Onglet **Environment Variables** : `NEXT_PUBLIC_SITE_URL = https://votre-domaine.ci` si le site est servi sous un domaine personnalisé.
+4. **Deploy**. Chaque `git push` sur la branche de production (par défaut `main`) redéploie le site ; les autres branches et les *pull requests*
+   obtiennent une URL de prévisualisation (`*.vercel.app`).
+5. Domaine personnalisé : **Settings → Domains → Add**, puis chez le registrar un enregistrement `A` (`76.76.21.21`) pour l'apex
+   ou un `CNAME` vers `cname.vercel-dns.com` pour `www`. Le certificat HTTPS est émis automatiquement.
+
+Vérification locale avant un déploiement : `npm run typecheck && npm run lint && npm run build` (identique à ce que Vercel exécute).
+La racine `/` redirige vers `/fr` ou `/en` selon la langue du navigateur (`src/proxy.ts`) ; `/robots.txt` et `/sitemap.xml` sont générés par `src/app/robots.ts` et `src/app/sitemap.ts`.

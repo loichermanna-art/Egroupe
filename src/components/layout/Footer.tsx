@@ -30,7 +30,7 @@ export function Footer({ locale, dict }: Props) {
   ];
 
   return (
-    <footer className="bg-ink text-paper/80" data-margin-dark="">
+    <footer className="bg-ink pb-[env(safe-area-inset-bottom)] text-paper/80" data-margin-dark="">
       <div className="wrap pb-8 pt-14 md:pt-16">
         <Stagger className="grid gap-10 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr] lg:gap-8" gap={0.1}>
           {/* Marque */}
@@ -53,10 +53,10 @@ export function Footer({ locale, dict }: Props) {
           <Item as="div">
           <nav aria-label={dict.footer.navTitle}>
             <h2 className="t-label text-white">{dict.footer.navTitle}</h2>
-            <ul className="mt-4 space-y-2 text-[0.9375rem]">
+            <ul className="mt-3 text-[0.9375rem] md:mt-4">
               {nav.map((l) => (
                 <li key={l.href}>
-                  <Link href={l.href} className="transition-colors hover:text-white">
+                  <Link href={l.href} className="inline-flex min-h-10 items-center transition-colors hover:text-white md:min-h-8">
                     {l.label}
                   </Link>
                 </li>
@@ -68,20 +68,20 @@ export function Footer({ locale, dict }: Props) {
           {/* Contact */}
           <Item>
             <h2 className="t-label text-white">{dict.footer.contactTitle}</h2>
-            <ul className="mt-4 space-y-2.5 text-[0.9375rem]">
+            <ul className="mt-3 text-[0.9375rem] md:mt-4 md:space-y-2.5">
               <li>
-                <a href={site.whatsappUrl} target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-white">
+                <a href={site.whatsappUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-10 items-center transition-colors hover:text-white md:min-h-0">
                   WhatsApp · {site.phonePrimary}
                 </a>
               </li>
               <li>
-                <a href={`tel:+${site.phoneSecondaryE164}`} className="transition-colors hover:text-white">
+                <a href={`tel:+${site.phoneSecondaryE164}`} className="inline-flex min-h-10 items-center transition-colors hover:text-white md:min-h-0">
                   {site.phoneSecondary}
                 </a>
               </li>
-              <li>{dict.footer.location}</li>
+              <li className="flex min-h-10 items-center md:min-h-0">{dict.footer.location}</li>
               <li>
-                <a href={site.links.learningWeb} target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-white">
+                <a href={site.links.learningWeb} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-10 items-center transition-colors hover:text-white md:min-h-0">
                   app.excellencegroup.ci
                 </a>
               </li>
@@ -91,10 +91,10 @@ export function Footer({ locale, dict }: Props) {
           {/* Réseaux */}
           <Item>
             <h2 className="t-label text-white">{dict.footer.followTitle}</h2>
-            <ul className="mt-4 space-y-2.5 text-[0.9375rem]">
+            <ul className="mt-3 text-[0.9375rem] md:mt-4">
               {socials.map(({ href, label, handle, Icon }) => (
                 <li key={label}>
-                  <a href={href} target="_blank" rel="noopener noreferrer" className="group inline-flex items-center gap-3 transition-colors hover:text-white">
+                  <a href={href} target="_blank" rel="noopener noreferrer" className="group inline-flex min-h-10 items-center gap-3 transition-colors hover:text-white md:min-h-9">
                     <Icon className="h-4 w-4 text-paper/60 transition-colors group-hover:text-white" />
                     <span>
                       {label} <span className="text-paper/50">· {handle}</span>
@@ -110,7 +110,7 @@ export function Footer({ locale, dict }: Props) {
           <p>
             © {year} {site.name} — {dict.footer.rights}
           </p>
-          <a href="#top" className="transition-colors hover:text-white">
+          <a href="#top" className="inline-flex min-h-10 items-center self-start transition-colors hover:text-white sm:min-h-0 sm:self-auto">
             {dict.footer.backToTop} ↑
           </a>
         </Reveal>

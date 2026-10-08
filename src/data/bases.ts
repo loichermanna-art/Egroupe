@@ -22,10 +22,10 @@ export type Base = {
 
 export const basesByZone: Record<ZoneKey, Base[]> = {
   south: [
-    { id: "anani", area: "Anani", place: "Groupe scolaire la Nouvelle Jérusalem", lat: 5.27, lng: -3.935, labelSide: "right" },
+    { id: "anani", area: "Anani", place: "Groupe scolaire la Nouvelle Jérusalem", lat: 5.27, lng: -3.935, labelSide: "right", labelMinK: 12 },
     { id: "koumassi-nord-est", area: "Koumassi Nord-Est", place: "EPP Nord-Est", lat: 5.3, lng: -3.95, labelSide: "right" },
-    { id: "koumassi-sicogi", area: "Koumassi Sicogi", place: "EPP Sicogi Est", lat: 5.292, lng: -3.956, labelSide: "bottom" },
-    { id: "port-bouet", area: "Port-Bouët", place: "Groupe scolaire Selmer Commissariat", lat: 5.252, lng: -3.968, labelSide: "right" },
+    { id: "koumassi-sicogi", area: "Koumassi Sicogi", place: "EPP Sicogi Est", lat: 5.292, lng: -3.956, labelSide: "bottom", labelMinK: 12 },
+    { id: "port-bouet", area: "Port-Bouët", place: "Groupe scolaire Selmer Commissariat", lat: 5.252, lng: -3.968, labelSide: "bottom" },
     { id: "marcory", area: "Marcory", place: "EPP Marcory — près de l'église Ste Thérèse", lat: 5.298, lng: -3.982, labelSide: "top" },
     { id: "anoumabo", area: "Anoumabo", place: "École St Pierre d'Anoumabo", lat: 5.303, lng: -3.999, labelSide: "left" },
   ],
