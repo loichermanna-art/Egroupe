@@ -8,6 +8,16 @@ export const en: Dictionary = {
     ogAlt: "Excellence Group — Excellence at the rhythm of our lives",
   },
 
+  preloader: {
+    motto: ["Discipline,", "Work", "and Success"],
+    footer: "Excellence Group · Abidjan, since 2011",
+  },
+
+  cursor: {
+    whatsapp: "WhatsApp",
+    call: "Call",
+  },
+
   nav: {
     home: "Home",
     about: "About us",
@@ -33,7 +43,7 @@ export const en: Dictionary = {
     ctaPrimary: "Enrol via WhatsApp",
     ctaSecondary: "Find a centre",
     noticeLabel: "2026 session",
-    notice: "90.02% of our students passed the BAC and 93.75% passed the BEPC.",
+    notice: "{bac} of our students passed the BAC and {bepc} passed the BEPC.",
     noticeLink: "See the detailed results",
     photoCaption: "The Excellence Group tutors in Koumassi, Abidjan — photo Romaric Assemien",
   },

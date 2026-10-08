@@ -6,6 +6,7 @@ import type { Dictionary } from "@/i18n/get-dictionary";
 import { site } from "@/data/site";
 import { FacebookIcon, InstagramIcon, LinkedinIcon, TikTokIcon } from "@/components/ui/BrandIcons";
 import { Reveal, Stagger, Item } from "@/components/motion/Reveal";
+import { PenUnderline } from "@/components/motion/PenMark";
 
 type Props = { locale: Locale; dict: Dictionary };
 
@@ -29,7 +30,7 @@ export function Footer({ locale, dict }: Props) {
   ];
 
   return (
-    <footer className="bg-ink text-paper/80">
+    <footer className="bg-ink text-paper/80" data-margin-dark="">
       <div className="wrap pb-8 pt-14 md:pt-16">
         <Stagger className="grid gap-10 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr] lg:gap-8" gap={0.1}>
           {/* Marque */}
@@ -40,7 +41,12 @@ export function Footer({ locale, dict }: Props) {
             </Link>
             <span className="rule-gold mt-5" aria-hidden />
             <p className="mt-4 max-w-sm text-[0.9375rem] leading-relaxed">{dict.footer.description}</p>
-            <p className="mt-3 text-[0.9375rem] text-gold-light">{dict.footer.tagline}</p>
+            {/* La devise, signée d'un trait de stylo */}
+            <p className="mt-3 font-serif text-[1.0625rem] text-gold-light">
+              <PenUnderline color="gold" delay={0.6}>
+                {dict.footer.tagline}
+              </PenUnderline>
+            </p>
           </Item>
 
           {/* Navigation */}

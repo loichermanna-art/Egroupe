@@ -13,6 +13,7 @@ import { formatNumber, formatPercent, cn } from "@/lib/utils";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Reveal, Rule, Stagger, Item, useReveal } from "@/components/motion/Reveal";
 import { Counter } from "@/components/motion/Counter";
+import { CircledCounter, PenUnderline } from "@/components/motion/PenMark";
 import { SplitLines } from "@/components/motion/SplitLines";
 import { EASE_EXPO, EASE_OUT, useMotionContext } from "@/components/motion/MotionProvider";
 
@@ -42,7 +43,7 @@ export function Results({ locale, dict }: Props) {
   return (
     <section id="results">
       {/* ---- Chiffres de la session : bloc bordeaux ---- */}
-      <div className="section bg-red-dark text-white">
+      <div className="section bg-red-dark text-white" data-margin-dark="">
         <div className="wrap">
           <SectionHeader title={dict.title} lead={dict.lead} dark />
 
@@ -58,7 +59,12 @@ export function Results({ locale, dict }: Props) {
                   {figures.map((f, i) => (
                     <Item key={f.key} className={cn(i > 0 && "sm:border-l sm:border-white/20 sm:pl-6")}>
                       <dd className="t-stat">
-                        <Counter value={f.value} locale={locale} decimals={f.decimals} suffix={f.percent ? pct : ""} delay={0.3 + i * 0.12} duration={1.8} />
+                        {f.key === "bac" ? (
+                          /* Le stylo du correcteur entoure le résultat principal une fois le compteur arrivé */
+                          <CircledCounter value={f.value} locale={locale} decimals={f.decimals} suffix={pct} delay={0.3} duration={1.8} color="gold" />
+                        ) : (
+                          <Counter value={f.value} locale={locale} decimals={f.decimals} suffix={f.percent ? pct : ""} delay={0.3 + i * 0.12} duration={1.8} />
+                        )}
                       </dd>
                       <dt className="mt-2 text-[0.9375rem] leading-snug text-white/80">{f.label}</dt>
                       {f.previous && (
@@ -222,7 +228,15 @@ function LaureateRows({
               className={cn("border-b border-line transition-colors hover:bg-cream/70", top && "bg-gold-pale")}
             >
               <td className="py-2.5 pr-3 tabular-nums text-ink-2">{l.rank}</td>
-              <td className="py-2.5 pr-3 font-medium text-ink">{l.name}</td>
+              <td className="py-2.5 pr-3 font-medium text-ink">
+                {l.rank === 1 ? (
+                  <PenUnderline color="gold" delay={0.9}>
+                    {l.name}
+                  </PenUnderline>
+                ) : (
+                  l.name
+                )}
+              </td>
               <td className="py-2.5 pr-3 text-ink-2">{l.series}</td>
               <td className="py-2.5 pr-3 text-right tabular-nums text-ink">
                 {formatNumber(l.points, locale)}

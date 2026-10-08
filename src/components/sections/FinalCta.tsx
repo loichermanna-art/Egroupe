@@ -6,11 +6,12 @@ import { site } from "@/data/site";
 import { Button } from "@/components/ui/Button";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Reveal, Rule, Stagger, Item } from "@/components/motion/Reveal";
+import { Magnetic } from "@/components/motion/Magnetic";
 
-type Props = { locale: Locale; dict: Dictionary["cta"]; location: string };
+type Props = { locale: Locale; dict: Dictionary["cta"]; location: string; cursor: Dictionary["cursor"] };
 
 /** Inscriptions et contact : texte et boutons à gauche, coordonnées à droite. */
-export function FinalCta({ locale, dict, location }: Props) {
+export function FinalCta({ locale, dict, location, cursor }: Props) {
   const waHref = `${site.whatsappUrl}?text=${encodeURIComponent(dict.whatsappMessage)}`;
 
   const rows = [
@@ -54,12 +55,14 @@ export function FinalCta({ locale, dict, location }: Props) {
 
           <Stagger className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center" gap={0.1} delay={0.35}>
             <Item>
-              <Button href={waHref} size="lg" className="w-full sm:w-auto">
-                {dict.whatsapp}
-              </Button>
+              <Magnetic className="w-full sm:w-auto">
+                <Button href={waHref} size="lg" className="w-full sm:w-auto" data-cursor={cursor.whatsapp}>
+                  {dict.whatsapp}
+                </Button>
+              </Magnetic>
             </Item>
             <Item>
-              <Button href={`tel:+${site.phonePrimaryE164}`} variant="secondary" size="lg" className="w-full sm:w-auto">
+              <Button href={`tel:+${site.phonePrimaryE164}`} variant="secondary" size="lg" className="w-full sm:w-auto" data-cursor={cursor.call}>
                 {dict.call} {site.phonePrimary}
               </Button>
             </Item>

@@ -23,7 +23,8 @@ const MotionContext = createContext<MotionContextValue>({
   fine: false,
 });
 
-function useMediaQuery(query: string): boolean {
+/** Requête média réactive, sûre côté serveur (faux au premier rendu). */
+export function useMediaQuery(query: string): boolean {
   const subscribe = useCallback(
     (onChange: () => void) => {
       const mq = window.matchMedia(query);

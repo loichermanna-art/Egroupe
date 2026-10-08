@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion, useMotionValue, useSpring } from "motion/react";
 
-import { useMotionContext } from "./MotionProvider";
+import { EASE_OUT, useMotionContext } from "./MotionProvider";
 
 const INTERACTIVE = 'a, button, [role="button"], [role="tab"], input, select, textarea, label, summary';
 
@@ -11,6 +11,8 @@ const INTERACTIVE = 'a, button, [role="button"], [role="tab"], input, select, te
  * Curseur personnalisé (ordinateur uniquement) : un point qui suit la souris
  * et un anneau à ressort qui s'élargit sur les éléments interactifs.
  * Dessiné en « différence » pour rester lisible sur papier comme sur bordeaux.
+ * Sur un élément portant `data-cursor="…"`, l'anneau devient une pastille
+ * rouge qui affiche ce mot (« WhatsApp », « Appeler »…).
  */
 export function Cursor() {
   const { fine, reduced } = useMotionContext();
@@ -24,6 +26,9 @@ export function Cursor() {
   const [visible, setVisible] = useState(false);
   const [hovering, setHovering] = useState(false);
   const [pressed, setPressed] = useState(false);
+  const [label, setLabel] = useState("");
+  // Dernier mot affiché : il reste pendant que la pastille s'efface
+  const [shownLabel, setShownLabel] = useState("");
 
   useEffect(() => {
     if (!enabled) return;
@@ -38,6 +43,10 @@ export function Cursor() {
     const onOver = (e: PointerEvent) => {
       const t = e.target as HTMLElement | null;
       setHovering(!!t?.closest?.(INTERACTIVE));
+      const labelled = t?.closest?.("[data-cursor]") as HTMLElement | null;
+      const word = labelled?.dataset.cursor ?? "";
+      setLabel(word);
+      if (word) setShownLabel(word);
     };
     const onLeave = () => setVisible(false);
     const onDown = () => setPressed(true);
@@ -61,24 +70,40 @@ export function Cursor() {
 
   if (!enabled) return null;
 
+  const labelled = visible && label !== "";
+
   return (
-    <div className="pointer-events-none fixed inset-0 z-[200] mix-blend-difference" aria-hidden>
+    <>
+      <div className="pointer-events-none fixed inset-0 z-[200] mix-blend-difference" aria-hidden>
+        <motion.div
+          className="absolute left-0 top-0 h-2 w-2 rounded-full bg-white"
+          style={{ x, y, translateX: "-50%", translateY: "-50%" }}
+          animate={{ opacity: visible && !labelled ? 1 : 0, scale: hovering ? 0.5 : 1 }}
+          transition={{ duration: 0.2 }}
+        />
+        <motion.div
+          className="absolute left-0 top-0 h-9 w-9 rounded-full border border-white"
+          style={{ x: ringX, y: ringY, translateX: "-50%", translateY: "-50%" }}
+          animate={{
+            opacity: visible && !labelled ? 1 : 0,
+            scale: pressed ? 0.85 : hovering ? 1.5 : 1,
+            backgroundColor: hovering ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0)",
+          }}
+          transition={{ duration: 0.25, ease: "easeOut" }}
+        />
+      </div>
+
+      {/* Pastille avec mot (hors mode « différence », pour garder le rouge de la charte) */}
       <motion.div
-        className="absolute left-0 top-0 h-2 w-2 rounded-full bg-white"
-        style={{ x, y, translateX: "-50%", translateY: "-50%" }}
-        animate={{ opacity: visible ? 1 : 0, scale: hovering ? 0.5 : 1 }}
-        transition={{ duration: 0.2 }}
-      />
-      <motion.div
-        className="absolute left-0 top-0 h-9 w-9 rounded-full border border-white"
+        className="pointer-events-none fixed left-0 top-0 z-[201] flex h-[4.75rem] w-[4.75rem] items-center justify-center rounded-full bg-red text-center text-[0.8125rem] font-medium leading-tight text-white"
         style={{ x: ringX, y: ringY, translateX: "-50%", translateY: "-50%" }}
-        animate={{
-          opacity: visible ? 1 : 0,
-          scale: pressed ? 0.85 : hovering ? 1.5 : 1,
-          backgroundColor: hovering ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0)",
-        }}
-        transition={{ duration: 0.25, ease: "easeOut" }}
-      />
-    </div>
+        initial={false}
+        animate={{ opacity: labelled ? 1 : 0, scale: labelled ? (pressed ? 0.9 : 1) : 0.4 }}
+        transition={{ duration: 0.35, ease: EASE_OUT }}
+        aria-hidden
+      >
+        {shownLabel}
+      </motion.div>
+    </>
   );
 }

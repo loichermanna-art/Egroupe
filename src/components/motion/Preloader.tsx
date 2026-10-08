@@ -4,19 +4,28 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion } from "motion/react";
 
-import { site } from "@/data/site";
 import { EASE_EXPO, EASE_OUT, useMotionContext } from "./MotionProvider";
 
 const SESSION_KEY = "eg-intro-seen";
+const RULES = 22;
 
 type Phase = "intro" | "exit" | "quick" | "done";
 
+type Props = {
+  dict: {
+    /** Devise en trois temps : « Discipline, / Travail / et Réussite ». */
+    motto: string[];
+    footer: string;
+  };
+};
+
 /**
- * Intro de premier chargement (≈ 2,2 s) : emblème, double filet or, nom de la
- * structure, puis rideau en deux temps (papier, bordeaux). Jouée une fois par
- * session ; réduite à un simple fondu si l'utilisateur préfère moins d'animations.
+ * Intro de premier chargement (≈ 3,2 s) : la feuille de cahier. La réglure se
+ * trace, la marge rouge descend, la devise s'écrit mot à mot, puis la feuille
+ * remonte et laisse la page. Jouée une fois par session ; réduite à un simple
+ * fondu si l'utilisateur préfère moins d'animations.
  */
-export function Preloader() {
+export function Preloader({ dict }: Props) {
   const { finishIntro, reduced } = useMotionContext();
   const [phase, setPhase] = useState<Phase>("intro");
 
@@ -32,14 +41,14 @@ export function Preloader() {
       timers.push(window.setTimeout(() => setPhase("done"), 420));
     } else {
       html.setAttribute("data-intro", "");
-      timers.push(window.setTimeout(() => setPhase("exit"), 1350));
+      timers.push(window.setTimeout(() => setPhase("exit"), 2300));
       timers.push(
         window.setTimeout(() => {
           html.removeAttribute("data-intro");
           finishIntro();
-        }, 1500),
+        }, 2750),
       );
-      timers.push(window.setTimeout(() => setPhase("done"), 2450));
+      timers.push(window.setTimeout(() => setPhase("done"), 3250));
     }
     sessionStorage.setItem(SESSION_KEY, "1");
 
@@ -56,52 +65,64 @@ export function Preloader() {
 
   return (
     <div className="pointer-events-none fixed inset-0 z-[100]" aria-hidden data-preloader="">
-      {/* Rideau bordeaux (second temps) */}
       <motion.div
-        className="absolute inset-0 bg-red-dark"
-        initial={false}
-        animate={leaving ? { y: "-100%" } : quick ? { opacity: 0 } : { y: 0 }}
-        transition={leaving ? { duration: 0.9, delay: 0.12, ease: EASE_EXPO } : { duration: 0.35 }}
-      />
-      {/* Rideau papier (premier temps) */}
-      <motion.div
-        className="absolute inset-0 flex flex-col items-center justify-center bg-paper"
+        className="absolute inset-0 overflow-hidden bg-paper"
         initial={false}
         animate={leaving ? { y: "-100%" } : quick ? { opacity: 0 } : { y: 0 }}
         transition={leaving ? { duration: 0.9, ease: EASE_EXPO } : { duration: 0.35 }}
       >
-        <motion.div
-          className="flex flex-col items-center"
-          initial={false}
-          animate={leaving || quick ? { opacity: 0, y: -8 } : { opacity: 1, y: 0 }}
-          transition={{ duration: 0.25 }}
-        >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.92 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.1, ease: EASE_OUT }}
-          >
-            <Image src="/images/brand/icon-512.png" alt="" width={64} height={61} priority className="h-16 w-auto" />
-          </motion.div>
-
-          <motion.span
-            className="rule-gold mt-5 origin-left"
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ duration: 0.6, delay: 0.35, ease: EASE_OUT }}
-          />
-
-          <span className="mt-4 block overflow-hidden pb-[0.1em]">
+        {/* Réglure */}
+        {!quick &&
+          Array.from({ length: RULES }, (_, i) => (
             <motion.span
-              className="block font-serif text-[1.25rem] font-semibold tracking-tight text-ink"
-              initial={{ y: "110%" }}
-              animate={{ y: 0 }}
-              transition={{ duration: 0.7, delay: 0.45, ease: EASE_OUT }}
-            >
-              {site.name}
-            </motion.span>
-          </span>
-        </motion.div>
+              key={i}
+              className="absolute inset-x-0 h-px origin-left bg-line"
+              style={{ top: `${((i + 1) * 100) / (RULES + 1)}%` }}
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{ duration: 0.7, delay: i * 0.045, ease: EASE_OUT }}
+            />
+          ))}
+
+        {/* Marge rouge */}
+        <motion.span
+          className="absolute inset-y-0 w-[2px] origin-top bg-red"
+          style={{ left: "var(--margin-x)" }}
+          initial={{ scaleY: 0 }}
+          animate={{ scaleY: 1 }}
+          transition={{ duration: 0.65, delay: 0.35, ease: EASE_EXPO }}
+        />
+
+        {/* Devise, mot à mot */}
+        <p
+          className="absolute right-5 top-1/2 flex -translate-y-1/2 flex-wrap gap-x-[0.3em] font-serif text-[clamp(1.875rem,1.35rem+1.9vw,3rem)] font-semibold leading-[1.15] tracking-tight text-ink"
+          style={{ left: "calc(var(--margin-x) + var(--margin-gap))" }}
+        >
+          {dict.motto.map((w, i) => (
+            <span key={w} className={["inline-block overflow-hidden pb-[0.12em] -mb-[0.12em]", i === dict.motto.length - 1 ? "text-red" : ""].join(" ")}>
+              <motion.span
+                className="inline-block"
+                initial={{ y: "110%" }}
+                animate={{ y: leaving || quick ? "-110%" : 0 }}
+                transition={{ duration: leaving ? 0.5 : 0.6, delay: leaving ? i * 0.05 : 0.9 + i * 0.16, ease: EASE_OUT }}
+              >
+                {w}
+              </motion.span>
+            </span>
+          ))}
+        </p>
+
+        {/* Signature */}
+        <motion.p
+          className="absolute bottom-8 flex items-center gap-3 text-[0.875rem] text-ink-3"
+          style={{ left: "calc(var(--margin-x) + var(--margin-gap))" }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: leaving || quick ? 0 : 1 }}
+          transition={{ duration: 0.4, delay: leaving || quick ? 0 : 1.2 }}
+        >
+          <Image src="/images/brand/icon-512.png" alt="" width={24} height={23} priority className="h-6 w-auto" />
+          {dict.footer}
+        </motion.p>
       </motion.div>
     </div>
   );

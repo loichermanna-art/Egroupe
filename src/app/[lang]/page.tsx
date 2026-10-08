@@ -19,7 +19,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
 
   return (
     <>
-      <Hero locale={lang} dict={dict.hero} facts={dict.facts} />
+      <Hero locale={lang} dict={dict.hero} facts={dict.facts} cursor={dict.cursor} />
       <About locale={lang} dict={dict.about} />
       <Pillars dict={dict.pillars} />
       <Results locale={lang} dict={dict.results} />
@@ -27,7 +27,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       <Events locale={lang} dict={dict.events} />
       <Learning dict={dict.learning} />
       <Testimonials dict={dict.testimonials} />
-      <FinalCta locale={lang} dict={dict.cta} location={dict.footer.location} />
+      <FinalCta locale={lang} dict={dict.cta} location={dict.footer.location} cursor={dict.cursor} />
     </>
   );
 }

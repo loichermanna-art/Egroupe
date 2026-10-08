@@ -24,18 +24,24 @@ Site vitrine d'**Excellence Group**, structure ivoirienne de formation créée e
 
 Couche de mouvement ajoutée par-dessus la charte, sans changer la mise en page ni les textes (`src/components/motion/`) :
 
-- **Intro** (`Preloader`) : emblème, filet or et nom de la structure, puis rideau en deux temps (papier, bordeaux) ; ≈ 2,2 s, jouée **une fois par session** (`sessionStorage` `eg-intro-seen`), simple fondu ensuite.
+- **Intro** (`Preloader`) : la feuille de cahier — la réglure se trace, la marge rouge descend, la devise « Discipline, Travail et Réussite » s'écrit mot à mot (signature avec l'emblème en bas), puis la feuille remonte ; ≈ 3,2 s, jouée **une fois par session** (`sessionStorage` `eg-intro-seen`), simple fondu ensuite. Timings en tête de `useEffect` dans `Preloader.tsx` (sortie 2 300 ms, page libérée 2 750 ms).
 - **Défilement lissé** (`SmoothScroll`, Lenis) : ordinateur uniquement, natif sur mobile ; les ancres internes tiennent compte de la hauteur de l'en-tête (`--header-h`) ; verrouillage pendant l'intro et le menu mobile.
-- **Curseur personnalisé** (`Cursor`) : point + anneau à ressort, en mode « différence » ; uniquement si `(hover: hover) and (pointer: fine)`.
+- **Curseur personnalisé** (`Cursor`) : point + anneau à ressort, en mode « différence » ; uniquement si `(hover: hover) and (pointer: fine)`. Sur un élément portant `data-cursor="…"` (boutons WhatsApp / Appeler), l'anneau devient une pastille rouge qui affiche le mot (textes `cursor.*` des dictionnaires).
+- **Le cahier d'écolier** (fil conducteur de la page) :
+  - **Marge** (`Margin`) : filet rouge fixe à gauche de la page (`--margin-x`), qui se remplit avec la progression du défilement (ressort) et passe à l'or devant les fonds sombres (éléments marqués `data-margin-dark` : bloc résultats, pied de page). Le contenu est aligné à `--margin-x + --margin-gap` (classe `wrap`, variables dans `globals.css`).
+  - **Stylo du correcteur** (`PenMark`, `PenUnderline`, `CircledCounter`) : traits SVG « à main levée » qui se tracent (`pathLength`) — cercle rouge autour de « 90,02 % » dans le bandeau du hero et cercle or sur le taux BAC du bloc résultats (une fois le compteur arrivé à sa valeur), soulignement du programme en cours de lecture, du premier lauréat et de la devise du pied de page.
+  - **Programmes épinglés** (`Pillars` + `PillarsList`) : sur grand écran le titre reste épinglé pendant que les quatre programmes défilent ; celui qui passe au milieu de l'écran est « lu » (net, souligné au stylo), les autres s'estompent à 42 %. Tous nets sur mobile et en animations réduites.
+  - **Piste des événements** (`Events` + `EventsTrack`) : sur ordinateur (≥ 64 rem de large et ≥ 44 rem de haut), la section est épinglée et le défilement vertical fait glisser les cinq rendez-vous à l'horizontale (affiche + texte) ; ailleurs, liste verticale habituelle. Seuils en tête du composant.
+  - **Bouton magnétique** (`Magnetic`) : le bouton WhatsApp (hero et contact) suit légèrement le pointeur (± 10 px, ressort) ; ordinateur uniquement.
 - **Révélations à l'entrée dans l'écran** (`Reveal`, `Stagger`/`Item`, `Rule`, `RevealImage`) : montée + fondu, filets qui se tracent, images dévoilées par masque avec léger zoom ; **titres révélés ligne par ligne** derrière un masque (`SplitLines`, lignes mesurées dans le DOM réel) ; compteurs (`Counter`) ; parallaxe légère sur la photo (`Parallax`).
 - **États animés** : soulignement de la section active et des onglets (`layoutId`), fondu croisé des séries de résultats et des zones de bases, courbe de résultats et contour de la carte qui se tracent (`pathLength`), épingles qui se posent, menu mobile en cascade, en-tête qui s'efface au défilement vers le bas.
 - **Carte 3D immersive** (`ui/MapCI.tsx`) : plan incliné en perspective (`perspective` CSS + `rotateX`, angle de 38° en vue d'ensemble à 55° en vue rapprochée, léger balancement au repos), relief en épaisseur sous le contour, brume d'horizon, repères dressés (ombre au sol, tige, tête) dont la taille suit la profondeur. À l'ouverture, la caméra descend sur Abidjan pendant que le plan s'incline et que le contour se trace ; elle vole ensuite (zoom + déplacement, trajectoire qui « prend de la hauteur » entre deux points éloignés) vers la zone, la ville ou la base choisie ; au niveau pays on voit les villes, au niveau ville les 23 bases nommées, la lagune Ébrié et l'océan posés au sol. Zoom par boutons, double-clic, glisser-déposer à la souris ; `viewBox` SVG animé (net à tout niveau de zoom) ; les repères restent des éléments 2D placés à la position projetée de leur point au sol (fonction `project`, mêmes paramètres que la scène CSS), ce qui évite les aplatissements de `preserve-3d`. Contour Natural Earth 1:10m (`src/data/map-ci.ts`, généré) ; coordonnées des bases au niveau du quartier dans `src/data/bases.ts` (`lat`/`lng`, à affiner avec les relevés GPS de la structure). Réglages en tête de fichier : `TILT_FAR`/`TILT`, `PERSPECTIVE`, `PLANE`, `K_MIN`, `START_K`.
 
 Garde-fous :
 
-- `prefers-reduced-motion: reduce` → intro réduite à un fondu, pas de Lenis, pas de curseur, pas de parallaxe, éléments affichés directement.
-- **SEO / sans JavaScript** : tout le texte (titres compris) est rendu côté serveur ; les éléments préparés pour l'animation portent `data-motion` / `data-motion-tree` et une règle `html:not(.js) […]` les rend visibles si le script ne s'exécute pas (`<html class="js">` est posé par un script inline dans `<head>`).
-- **Mobile** : pas de Lenis, pas de curseur, pas de parallaxe ; uniquement des révélations courtes.
+- `prefers-reduced-motion: reduce` → intro réduite à un fondu, pas de Lenis, pas de curseur, pas de parallaxe, pas d'épinglage ni d'estompage, traits de stylo affichés directement, éléments visibles sans animation.
+- **SEO / sans JavaScript** : tout le texte (titres compris) est rendu côté serveur ; les éléments préparés pour l'animation portent `data-motion` / `data-motion-tree` / `data-pen` et une règle `html:not(.js) […]` les rend visibles si le script ne s'exécute pas (l'intro `data-preloader` est alors masquée) (`<html class="js">` est posé par un script inline dans `<head>`).
+- **Mobile** : pas de Lenis, pas de curseur, pas de parallaxe, pas d'épinglage (programmes et événements en listes verticales) ; uniquement des révélations courtes, la marge et les traits de stylo.
 
 ## Démarrer
 
@@ -53,9 +59,9 @@ npm run typecheck  # tsc --noEmit
 src/
   app/[lang]/        layout (fonts, metadata, nav, footer), page d'accueil, 404
   components/
-    motion/          MotionProvider (contexte intro / reduced-motion / pointeur), SmoothScroll (Lenis), Preloader, Cursor, Reveal, SplitLines, Counter, Parallax
+    motion/          MotionProvider (contexte intro / reduced-motion / pointeur), SmoothScroll (Lenis), Preloader, Cursor, Margin, Magnetic, PenMark, Reveal, SplitLines, Counter, Parallax
     layout/          Navbar (barre utilitaire + navigation, section active, menu mobile), Footer
-    sections/        Hero (+ repères chiffrés), About, Pillars, Results, Bases (+ BasesExplorer), Events, Learning, Testimonials, FinalCta
+    sections/        Hero (+ repères chiffrés), About, Pillars (+ PillarsList), Results, Bases (+ BasesExplorer), Events (+ EventsTrack), Learning, Testimonials, FinalCta
     ui/              Button, SectionHeader, MapCI (carte 3D), BrandIcons
   data/              site (contacts, liens), stats (taux BAC/BEPC), laureates, bases (+ coordonnées), events, map-ci (contour du pays)
   i18n/              config, dictionnaires fr/en, getDictionary

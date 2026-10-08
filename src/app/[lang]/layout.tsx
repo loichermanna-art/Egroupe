@@ -15,6 +15,7 @@ import { MotionProvider } from "@/components/motion/MotionProvider";
 import { SmoothScroll } from "@/components/motion/SmoothScroll";
 import { Preloader } from "@/components/motion/Preloader";
 import { Cursor } from "@/components/motion/Cursor";
+import { Margin } from "@/components/motion/Margin";
 
 type Params = Promise<{ lang: string }>;
 
@@ -104,8 +105,9 @@ export default async function RootLayout({
       <body className="flex min-h-dvh flex-col">
         <MotionProvider>
           <SmoothScroll>
-            <Preloader />
+            <Preloader dict={dict.preloader} />
             <Cursor />
+            <Margin />
             <a
               href="#main"
               className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-[var(--radius-sm)] focus:bg-red focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-white"

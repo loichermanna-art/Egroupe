@@ -9,16 +9,25 @@ import { SplitLines } from "@/components/motion/SplitLines";
 import { Reveal, RevealImage, Stagger, Item, Rule } from "@/components/motion/Reveal";
 import { Parallax } from "@/components/motion/Parallax";
 import { Counter } from "@/components/motion/Counter";
+import { CircledCounter } from "@/components/motion/PenMark";
+import { Magnetic } from "@/components/motion/Magnetic";
 
-type Props = { locale: Locale; dict: Dictionary["hero"]; facts: Dictionary["facts"] };
+type Props = { locale: Locale; dict: Dictionary["hero"]; facts: Dictionary["facts"]; cursor: Dictionary["cursor"] };
+
+/** Découpe « {bac} … {bepc} … » en segments texte / jetons. */
+function splitNotice(template: string): string[] {
+  return template.split(/(\{bac\}|\{bepc\})/).filter(Boolean);
+}
 
 /**
  * En-tête de page. Entrée orchestrée après l'intro : titre ligne par ligne,
  * chapeau, boutons, annonce ; la photo se dévoile par un masque et se pose,
  * puis les repères chiffrés s'incrémentent.
  */
-export function Hero({ locale, dict, facts }: Props) {
+export function Hero({ locale, dict, facts, cursor }: Props) {
   const home = `/${locale}`;
+  const pct = locale === "fr" ? " %" : "%";
+  const notice = splitNotice(dict.notice);
 
   return (
     <section id="top" className="bg-paper">
@@ -33,9 +42,11 @@ export function Hero({ locale, dict, facts }: Props) {
 
             <Stagger className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center" delay={0.6} gap={0.1}>
               <Item>
-                <Button href={site.whatsappUrl} size="lg" className="w-full sm:w-auto">
-                  {dict.ctaPrimary}
-                </Button>
+                <Magnetic className="w-full sm:w-auto">
+                  <Button href={site.whatsappUrl} size="lg" className="w-full sm:w-auto" data-cursor={cursor.whatsapp}>
+                    {dict.ctaPrimary}
+                  </Button>
+                </Magnetic>
               </Item>
               <Item>
                 <Button href={`${home}#bases`} variant="secondary" size="lg" className="w-full sm:w-auto">
@@ -44,10 +55,28 @@ export function Hero({ locale, dict, facts }: Props) {
               </Item>
             </Stagger>
 
-            {/* Annonce de la session : information datée, comme sur un site tenu à jour */}
+            {/* Annonce de la session : information datée ; le stylo du correcteur entoure le taux du BAC */}
             <Reveal kind="fade" delay={0.95}>
-              <p className="mt-9 max-w-[32rem] border-l-2 border-red pl-4 text-[0.9375rem] leading-relaxed text-ink-2">
-                <strong className="font-semibold text-ink">{dict.noticeLabel}.</strong> {dict.notice}{" "}
+              <p className="mt-9 max-w-[32rem] border-l-2 border-red pl-4 text-[0.9375rem] leading-[1.9] text-ink-2">
+                <strong className="font-semibold text-ink">{dict.noticeLabel}.</strong>{" "}
+                {notice.map((part, i) =>
+                  part === "{bac}" ? (
+                    <CircledCounter
+                      key={i}
+                      value={site.stats.bacRate2026}
+                      locale={locale}
+                      decimals={2}
+                      suffix={pct}
+                      delay={1.05}
+                      duration={1.6}
+                      className="mx-1 font-semibold text-ink"
+                    />
+                  ) : part === "{bepc}" ? (
+                    <Counter key={i} value={site.stats.bepcRate2026} locale={locale} decimals={2} suffix={pct} delay={1.2} duration={1.6} className="font-semibold text-ink" />
+                  ) : (
+                    <span key={i}>{part}</span>
+                  ),
+                )}{" "}
                 <Link href={`${home}#results`} className="link-ul whitespace-nowrap font-medium text-red">
                   {dict.noticeLink}
                 </Link>

@@ -1,7 +1,7 @@
 # Mémoire de la discussion — Site Excellence Group (E-Group)
 
 *Document de reprise : ce qui a été demandé, décidé, construit et ce qui reste à faire.*
-*Dernière mise à jour : 8 octobre 2026 · branche `arena/3004943d-egroupe` · dernier commit `1df153a` · PR #1 ouverte vers `main`.*
+*Dernière mise à jour : 8 octobre 2026 · branche `arena/3004943d-egroupe` · PR #1 ouverte vers `main`.*
 
 ---
 
@@ -23,7 +23,8 @@ Créer, dans le dépôt GitHub `loichermanna-art/Egroupe`, le site web d'**Excel
 | 6 | Carte des bases : la caméra doit **voler vers la base sélectionnée** (zoom + déplacement). | Carte à caméra : contour réel Natural Earth 1:10m, 23 bases géolocalisées (niveau quartier), vol zoom + déplacement, niveaux pays / ville, zoom boutons, double-clic, glisser. | `6d50aed` |
 | 7 | La carte doit **déjà être un plan 3D immersif zoomé sur Abidjan avant tout clic** (pas la vue plate du pays). | Scène en perspective : plan incliné (38° → 55° selon le zoom), relief, brume d'horizon, repères dressés, ouverture caméra sur Abidjan pendant que le contour se trace. | `1df153a` |
 | 8 | Relancer le serveur pour voir l'aperçu. | Dépendances réinstallées (l'environnement avait été remis à zéro), serveur `npm run dev` relancé sur le port 3000. | — |
-| 9 | Rédiger ce document de mémoire. | Présent fichier. | — |
+| 9 | Rédiger ce document de mémoire. | Présent fichier. | `0eb88de` |
+| 10 | Le client colle un prototype externe « kit cahier d'écolier » (marge rouge, stylo du correcteur, programmes épinglés, piste d'événements horizontale, bouton magnétique, curseur à mots, préchargeur cahier) et demande de l'expliquer, puis choisit l'option **A : greffer les idées dans nos composants** (pas de reproduction littérale). | Greffe complète en Next.js, FR + EN, rendu serveur, `prefers-reduced-motion` respecté, Lenis conservé, carte 3D intacte, panneau « Specs » du prototype non repris, indice de défilement volontairement non ajouté. Préchargeur réécrit en feuille de cahier (ancienne version emblème récupérable dans le commit `0eb88de`). | *(ce commit)* |
 
 ---
 
@@ -37,6 +38,7 @@ Créer, dans le dépôt GitHub `loichermanna-art/Egroupe`, le site web d'**Excel
 - Site **FR et EN** (sélecteur de langue, contenu traduit).
 - **Pas d'esthétique « générée »** : pas de typographie géante, pas de verre/dégradés/lueurs, pas d'illustrations IA ou 3D décoratives, navigation simple, vrai responsive, états d'interface réels, rien d'ajouté artificiellement. Conserver toute l'information et la logique.
 - **Motion design cinématique** assumé (préchargeur, Lenis, curseur ordinateur) — cette demande remplace l'ancienne consigne « micro-interactions très discrètes » — en gardant charte et typographie, et en respectant `prefers-reduced-motion`, le SEO (texte rendu côté serveur) et la performance mobile.
+- **Kit « cahier d'écolier »** : option A choisie — greffer les idées dans nos composants (textes FR + EN, timings adaptés au site), pas de reproduction littérale du prototype ; charte et typographie inchangées ; carte 3D intacte.
 
 ---
 
@@ -64,7 +66,9 @@ Créer, dans le dépôt GitHub `loichermanna-art/Egroupe`, le site web d'**Excel
 
 **Page d'accueil (9 sections, ancres).** Hero (`top`) → À propos (`about`) → Programmes (`programs`) → Résultats (`results`, courbe BAC/BEPC + lauréats) → Bases (`bases`, carte 3D + liste par zone) → Événements (`events`) → EG Learning (`learning`) → Témoignages (`testimonials`) → Inscriptions / contact (`contact`). Barre de navigation avec section active et menu mobile ; pied de page ; page 404.
 
-**Couche motion** (`src/components/motion/`) : `MotionProvider` (contexte intro / reduced-motion / pointeur fin), `SmoothScroll` (Lenis, ordinateur seulement, ancres avec décalage d'en-tête), `Preloader` (une fois par session, `sessionStorage` `eg-intro-seen`), `Cursor`, `Reveal` (+ `Stagger`, `Item`, `Rule`, `RevealImage`, `useReveal`), `SplitLines` (titres ligne par ligne), `Counter`, `Parallax`. Garde-fous : `prefers-reduced-motion`, rendu serveur de tout le texte, règles CSS « sans JavaScript » (`data-motion`, `data-motion-tree`, `data-zoom-layer`).
+**Couche motion** (`src/components/motion/`) : `MotionProvider` (contexte intro / reduced-motion / pointeur fin, `useMediaQuery`), `SmoothScroll` (Lenis, ordinateur seulement, ancres avec décalage d'en-tête), `Preloader` (feuille de cahier : réglure, marge, devise mot à mot ; une fois par session, `sessionStorage` `eg-intro-seen`), `Cursor` (+ pastille à mot via `data-cursor`), `Margin` (marge rouge fixe qui se remplit au défilement, or devant `data-margin-dark`), `Magnetic` (bouton WhatsApp), `PenMark` / `PenUnderline` / `CircledCounter` (traits de stylo SVG), `Reveal` (+ `Stagger`, `Item`, `Rule`, `RevealImage`, `useReveal`), `SplitLines` (titres ligne par ligne), `Counter` (avec `onComplete`), `Parallax`. Sections : `Pillars` + `PillarsList` (titre épinglé, programme actif net et souligné, autres à 42 %), `Events` + `EventsTrack` (piste horizontale épinglée sur ordinateur, liste verticale ailleurs). Garde-fous : `prefers-reduced-motion`, rendu serveur de tout le texte, règles CSS « sans JavaScript » (`data-motion`, `data-motion-tree`, `data-pen`, `data-preloader`, `data-zoom-layer`).
+
+**Réglages du « cahier ».** Position de la marge et retrait du contenu : `--margin-x` / `--margin-gap` dans `src/app/globals.css` (12 px + 16 px sur mobile, 44 px + 44 px à partir de 48 rem). Timings de l'intro : `Preloader.tsx`. Opacité des programmes en retrait (0,42) : `PillarsList.tsx`. Seuils d'épinglage des événements (64 rem de large, 44 rem de haut) : `EventsTrack.tsx`. Force du bouton magnétique (10 px) : `Magnetic.tsx`. Couleurs du stylo (rouge `#b20603`, or `#d9b45a`) : `PenMark.tsx`.
 
 **Carte 3D** (`src/components/ui/MapCI.tsx`, pilotée par `sections/BasesExplorer.tsx`) : plan SVG incliné en perspective (`perspective` CSS + `rotateX`), angle 38° en vue d'ensemble → 55° en vue rapprochée, léger balancement au repos, relief sous le contour, brume d'horizon, repères dressés positionnés par projection mathématique (`project()`), `viewBox` animé (net à tout zoom). Ouverture : contour qui se trace + inclinaison + descente de la caméra sur Abidjan ; puis vols vers zone / ville / base, zoom ±, double-clic, glisser à la souris, retour à la vue d'ensemble. Réglages en tête de fichier : `TILT_FAR`, `TILT`, `PERSPECTIVE`, `PLANE`, `K_MIN`, `START_K`.
 
@@ -88,6 +92,7 @@ Créer, dans le dépôt GitHub `loichermanna-art/Egroupe`, le site web d'**Excel
 
 ## 7. Suite envisagée
 
+- Retour visuel du client sur la greffe du cahier (intro, marge, programmes épinglés, piste des événements, pastille du curseur) ; ajustements de timings/seuils si besoin.
 - Ajuster la carte 3D selon le retour visuel du client.
 - Pages suivantes, une par une : programmes détaillés, résultats complets, bases (page dédiée), événements / galerie, EG Learning, contact / inscription (formulaire à définir), mentions légales.
 - Fonctionnalités reportées : formulaire d'inscription, galerie d'événements, graphiques avancés.

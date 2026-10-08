@@ -6,6 +6,16 @@ export const fr = {
     ogAlt: "Excellence Group — L'excellence au rythme de notre vie",
   },
 
+  preloader: {
+    motto: ["Discipline,", "Travail", "et Réussite"],
+    footer: "Excellence Group · Abidjan, depuis 2011",
+  },
+
+  cursor: {
+    whatsapp: "WhatsApp",
+    call: "Appeler",
+  },
+
   nav: {
     home: "Accueil",
     about: "Qui sommes-nous",
@@ -31,7 +41,8 @@ export const fr = {
     ctaPrimary: "S'inscrire via WhatsApp",
     ctaSecondary: "Trouver une base",
     noticeLabel: "Session 2026",
-    notice: "90,02 % de réussite au BAC et 93,75 % au BEPC pour nos élèves.",
+    /** `{bac}` et `{bepc}` sont remplacés par les taux (chiffres animés). */
+    notice: "{bac} de réussite au BAC et {bepc} au BEPC pour nos élèves.",
     noticeLink: "Voir le détail des résultats",
     photoCaption: "Les encadreurs Excellence Group à Koumassi, Abidjan — photo Romaric Assemien",
   },
