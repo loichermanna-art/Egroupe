@@ -1,0 +1,32 @@
+export const site = {
+  name: "Excellence Group",
+  shortName: "E-Group",
+  foundedYear: 2011,
+  city: "Abidjan",
+  country: "Côte d'Ivoire",
+  phonePrimary: "+225 07 58 43 99 90",
+  phonePrimaryE164: "2250758439990",
+  phoneSecondary: "+225 01 52 75 88 95",
+  phoneSecondaryE164: "2250152758895",
+  whatsappUrl: "https://wa.me/2250758439990",
+  links: {
+    learningWeb: "https://app.excellencegroup.ci",
+    legacySite: "https://egroup-learning.com",
+    playStore: "https://play.google.com/store/search?q=EgroupLearning&c=apps",
+    appStore: "https://www.apple.com/app-store/",
+  },
+  socials: {
+    facebook: "https://www.facebook.com/ExcellenceGroup1/",
+    instagram: "https://www.instagram.com/group.excellence/",
+    tiktok: "https://www.tiktok.com/@excellence.group",
+    linkedin: "https://www.linkedin.com/company/excellence-group-ci/",
+  },
+  stats: {
+    bacRate2026: 90.02,
+    bepcRate2026: 93.75,
+    graduates2026: 2147,
+    bases: 23,
+    cities: 5,
+    years: 15,
+  },
+} as const;
